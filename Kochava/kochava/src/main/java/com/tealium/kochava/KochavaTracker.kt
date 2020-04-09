@@ -61,8 +61,8 @@ class KochavaTracker() : KochavaTrackable {
     override fun rating(value: Double, maxRating: Double) {
         Tracker.sendEvent(
             Tracker.Event(Tracker.EVENT_TYPE_RATING)
-            .setRatingValue(value)
-            .setMaxRatingValue(maxRating)
+                .setRatingValue(value)
+                .setMaxRatingValue(maxRating)
         )
     }
 
@@ -140,6 +140,7 @@ class KochavaTracker() : KochavaTrackable {
     }
 
     override fun customEvent(eventName: String, parameters: JSONObject) {
+        println("calling custom")
         Tracker.sendEvent(eventName, parameters.toString())
     }
 }

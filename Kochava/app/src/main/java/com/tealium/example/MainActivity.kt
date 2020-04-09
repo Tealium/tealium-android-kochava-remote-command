@@ -3,7 +3,6 @@ package com.tealium.example
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
-import com.tealium.example.kochava.R
 
 class MainActivity : AppCompatActivity() {
 
@@ -29,6 +28,7 @@ class MainActivity : AppCompatActivity() {
 
         hashMap.put("name", "roya")
 
+        println("Calling method")
         purchaseBtn = findViewById<Button>(R.id.purchaseBtn)
         purchaseBtn.setOnClickListener{ TealiumHelper.trackEvent("purchase", hashMap)}
 

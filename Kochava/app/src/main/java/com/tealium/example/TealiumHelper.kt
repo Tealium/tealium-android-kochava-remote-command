@@ -15,6 +15,7 @@ object TealiumHelper {
     }
 
     fun trackEvent(eventName: String, data: Map<String, Any>?) {
+        println("calling track " + eventName)
         Tealium.getInstance(instanceName)?.trackEvent(eventName, data)
     }
 }
