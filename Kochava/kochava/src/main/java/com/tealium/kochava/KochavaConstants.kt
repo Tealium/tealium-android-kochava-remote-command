@@ -57,7 +57,7 @@ object Parameters {
     const val SCORE = "score"
     const val RESULTS = "results"
     const val REGISTRATION_METHOD = "registration_method"
-    const val REFERRAL_FORM = "referral_form"
+    const val REFERRAL_FROM = "referral_from"
     const val RECEIPT_ID = "receipt_id"
     const val RATING_VALUE = "rating_value"
     const val QUANTITY = "quantity"

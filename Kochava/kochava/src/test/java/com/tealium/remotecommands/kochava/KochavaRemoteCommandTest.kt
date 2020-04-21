@@ -2,6 +2,7 @@ package com.tealium.remotecommands.kochava;
 
 
 import android.app.Application
+import android.content.Context
 import com.tealium.kochava.*
 import io.mockk.*
 import io.mockk.impl.annotations.InjectMockKs
@@ -14,6 +15,7 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 
 
+
 @RunWith(RobolectricTestRunner::class)
 public class KochavaRemoteCommandTest {
 
@@ -23,12 +25,15 @@ public class KochavaRemoteCommandTest {
     @MockK
     lateinit var mockApp: Application
 
-    @InjectMockKs
-    var kochavaRemoteCommand: KochavaRemoteCommand = KochavaRemoteCommand(mockApp, "123")
+    lateinit var kochavaRemoteCommand: KochavaRemoteCommand
+    @MockK
+    lateinit var mockapplicationContext: Context
 
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
+        every { mockApp.applicationContext } returns mockapplicationContext
+        kochavaRemoteCommand  = KochavaRemoteCommand(mockApp, "123")
     }
 
     @Test
@@ -47,13 +52,17 @@ public class KochavaRemoteCommandTest {
     fun purchaseCalledWithStandardParameters() {
         val purchaseProperties = JSONObject()
         purchaseProperties.put(Parameters.USER_ID, "10")
+        purchaseProperties.put(Parameters.NAME, "name")
+        purchaseProperties.put(Parameters.CONTENT_ID, "100")
         purchaseProperties.put(Parameters.PRICE, 10.99)
+        purchaseProperties.put(Parameters.CURRENCY, "usd")
+        purchaseProperties.put(Parameters.CHECKOUT_AS_GUEST, "yes")
 
         every { mockTracker.purchase(any(), any(), any(), any(), any(), any()) } just Runs
 
         kochavaRemoteCommand.parseCommands(arrayOf(Commands.PURCHASE), purchaseProperties)
         verify {
-            mockTracker.purchase("10", "", "", 10.99, "", "")
+            mockTracker.purchase("10", "name", "100", 10.99, "usd", "yes")
         }
         confirmVerified(mockTracker)
     }
@@ -107,6 +116,40 @@ public class KochavaRemoteCommandTest {
         kochavaRemoteCommand.parseCommands(arrayOf(Commands.TUTORIAL_COMPLETE), parameters)
         verify {
             mockTracker.customEvent("Tutorial Complete", parameters)
+        }
+        confirmVerified(mockTracker)
+    }
+
+    @Test
+    fun levelCompleteCalledWithStandardParameters() {
+        val tutorialProperties = JSONObject()
+        tutorialProperties.put(Parameters.USER_ID, "10")
+        tutorialProperties.put(Parameters.NAME, "level")
+        tutorialProperties.put(Parameters.DURATION, 10.50)
+
+        every { mockTracker.tutorialLevelComplete(any(), any(), any(), any()) } just Runs
+
+        kochavaRemoteCommand.parseCommands(arrayOf(Commands.LEVEL_COMPLETE), tutorialProperties)
+        verify {
+            mockTracker.tutorialLevelComplete("Level Complete", "10", "tutorial", 10.50)
+        }
+        confirmVerified(mockTracker)
+    }
+
+    @Test
+    fun levelCompleteCalledWithCustomParameters() {
+        val parameters = JSONObject()
+        val info_dictionary = JSONObject()
+        info_dictionary.put("key1", "value1")
+        info_dictionary.put("key2", 2)
+
+        parameters.put("info_dictionary", info_dictionary)
+
+        every { mockTracker.customEvent(any(), any()) } just Runs
+
+        kochavaRemoteCommand.parseCommands(arrayOf(Commands.LEVEL_COMPLETE), parameters)
+        verify {
+            mockTracker.customEvent("Level Complete", parameters)
         }
         confirmVerified(mockTracker)
     }
@@ -205,7 +248,7 @@ public class KochavaRemoteCommandTest {
     @Test
     fun addToCartCalledWithCustomParameters() {
         val cartProperties = JSONObject()
-        cartProperties.put(Parameters.REFERRAL_FORM, "form")
+        cartProperties.put(Parameters.REFERRAL_FROM, "form")
 
         val info_dictionary = JSONObject()
         info_dictionary.put("key1", "value1")
@@ -241,7 +284,7 @@ public class KochavaRemoteCommandTest {
     @Test
     fun addToWishlistCalledWithCustomParameters() {
         val wishlistProperties = JSONObject()
-        wishlistProperties.put(Parameters.REFERRAL_FORM, "form")
+        wishlistProperties.put(Parameters.REFERRAL_FROM, "form")
 
         val info_dictionary = JSONObject()
         info_dictionary.put("key1", "value1")
@@ -333,7 +376,7 @@ public class KochavaRemoteCommandTest {
         val registrationProperties = JSONObject()
         registrationProperties.put(Parameters.USER_ID, "abc")
         registrationProperties.put(Parameters.USER_NAME, "def")
-        registrationProperties.put(Parameters.REFERRAL_FORM, "form")
+        registrationProperties.put(Parameters.REFERRAL_FROM, "form")
 
         every { mockTracker.registrationComplete(any(), any(), any()) } just Runs
 
@@ -441,6 +484,7 @@ public class KochavaRemoteCommandTest {
         val parameters = JSONObject()
         parameters.put("key1", "value1")
         parameters.put("key2", 2)
+        parameters.put("user_id", "100")
 
         every { mockTracker.customEvent(any(), any()) } just Runs
 

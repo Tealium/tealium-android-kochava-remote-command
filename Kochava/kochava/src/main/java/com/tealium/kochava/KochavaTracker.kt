@@ -4,18 +4,24 @@ import android.app.Application
 import com.kochava.base.Tracker
 import org.json.JSONObject
 
-class KochavaTracker() : KochavaTrackable {
+class KochavaTracker(application: Application, applicationId: String) : KochavaTrackable {
 
-    lateinit var tracker: Tracker
 
-    override fun initialize(application: Application, applicationId: String) {
-        // Start the Kochava Tracker
+    init {
         Tracker.configure(Tracker.Configuration(application.applicationContext)
             .setAppGuid(applicationId)
         )
     }
 
+//    override fun initialize(application: Application, applicationId: String) {
+//        // Start the Kochava Tracker
+//        Tracker.configure(Tracker.Configuration(application.applicationContext)
+//            .setAppGuid(applicationId)
+//        )
+//    }
+
     override fun tutorialLevelComplete(eventName: String, userId: String, name: String, duration: Double) {
+        println("track event tutorial level complete ")
         Tracker.sendEvent(
             Tracker.Event(Tracker.EVENT_TYPE_TUTORIAL_COMPLETE)
                 .setUserId(userId)
@@ -25,7 +31,7 @@ class KochavaTracker() : KochavaTrackable {
     }
 
     override fun purchase (userId: String, name: String, contentId: String, price: Double, currency: String, guestCheckout: String) {
-        println("track event purchase")
+        println("track event purchase " + userId + " " + name + " " + contentId + " " + price + " " + currency + " " + guestCheckout)
         Tracker.sendEvent(
             Tracker.Event(Tracker.EVENT_TYPE_PURCHASE)
                 .setUserId(userId)
@@ -35,6 +41,7 @@ class KochavaTracker() : KochavaTrackable {
                 .setCurrency(currency)
                 .setCheckoutAsGuest(guestCheckout)
         )
+        println("after track event purchase kochava")
     }
 
     override fun adview(
@@ -46,6 +53,7 @@ class KochavaTracker() : KochavaTrackable {
         campaignName: String,
         size: String
     ) {
+        println("adview tracker")
         Tracker.sendEvent(
             Tracker.Event(Tracker.EVENT_TYPE_AD_VIEW)
                 .setAdType(type)
@@ -142,5 +150,6 @@ class KochavaTracker() : KochavaTrackable {
     override fun customEvent(eventName: String, parameters: JSONObject) {
         println("calling custom")
         Tracker.sendEvent(eventName, parameters.toString())
+        println("finished calling custom")
     }
 }

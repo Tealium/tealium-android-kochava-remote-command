@@ -5,7 +5,6 @@ import org.json.JSONObject
 
 interface KochavaTrackable {
 
-    fun initialize(application: Application, applicationId: String)
 
     // standard events
     // Gaming
