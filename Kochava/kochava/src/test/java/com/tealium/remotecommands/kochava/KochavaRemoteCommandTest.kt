@@ -3,9 +3,11 @@ package com.tealium.remotecommands.kochava;
 
 import android.app.Application
 import android.content.Context
-import com.tealium.kochava.*
+import com.tealium.kochava.Commands
+import com.tealium.kochava.KochavaRemoteCommand
+import com.tealium.kochava.KochavaTrackable
+import com.tealium.kochava.Parameters
 import io.mockk.*
-import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.MockK
 import org.json.JSONObject
 import org.junit.Assert.assertEquals
@@ -15,9 +17,8 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 
 
-
 @RunWith(RobolectricTestRunner::class)
-public class KochavaRemoteCommandTest {
+class KochavaRemoteCommandTest {
 
     @MockK
     lateinit var mockTracker: KochavaTrackable
@@ -26,6 +27,7 @@ public class KochavaRemoteCommandTest {
     lateinit var mockApp: Application
 
     lateinit var kochavaRemoteCommand: KochavaRemoteCommand
+
     @MockK
     lateinit var mockapplicationContext: Context
 
@@ -33,7 +35,7 @@ public class KochavaRemoteCommandTest {
     fun setUp() {
         MockKAnnotations.init(this)
         every { mockApp.applicationContext } returns mockapplicationContext
-        kochavaRemoteCommand  = KochavaRemoteCommand(mockApp, "123")
+        kochavaRemoteCommand = KochavaRemoteCommand(mockApp, "123", tracker = mockTracker)
     }
 
     @Test
@@ -380,7 +382,10 @@ public class KochavaRemoteCommandTest {
 
         every { mockTracker.registrationComplete(any(), any(), any()) } just Runs
 
-        kochavaRemoteCommand.parseCommands(arrayOf(Commands.REGISTRATION_COMPLETE), registrationProperties)
+        kochavaRemoteCommand.parseCommands(
+            arrayOf(Commands.REGISTRATION_COMPLETE),
+            registrationProperties
+        )
         verify {
             mockTracker.registrationComplete("abc", "def", "form")
         }
@@ -400,7 +405,10 @@ public class KochavaRemoteCommandTest {
 
         every { mockTracker.customEvent(any(), any()) } just Runs
 
-        kochavaRemoteCommand.parseCommands(arrayOf(Commands.REGISTRATION_COMPLETE), registrationProperties)
+        kochavaRemoteCommand.parseCommands(
+            arrayOf(Commands.REGISTRATION_COMPLETE),
+            registrationProperties
+        )
         verify {
             mockTracker.customEvent("Registration Complete", registrationProperties)
         }
@@ -451,7 +459,6 @@ public class KochavaRemoteCommandTest {
         achievementProperties.put(Parameters.DURATION, 10.5)
 
         every { mockTracker.achievement(any(), any(), any()) } just Runs
-
         kochavaRemoteCommand.parseCommands(arrayOf(Commands.ACHIEVEMENT), achievementProperties)
         verify {
             mockTracker.achievement("abc", "name", 10.5)

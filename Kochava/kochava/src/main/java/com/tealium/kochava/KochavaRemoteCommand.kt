@@ -1,24 +1,15 @@
 package com.tealium.kochava
 
 import android.app.Application
-import android.media.Rating
-import android.net.Uri
-import android.util.Log
-import android.view.View
-import com.kochava.base.Tracker
 import com.tealium.internal.tagbridge.RemoteCommand
-import com.tealium.kochava.*
 import org.json.JSONObject
-import org.json.JSONException
-import org.json.JSONArray
-import java.util.logging.Level
 
 
 open class KochavaRemoteCommand : RemoteCommand {
 
     private val TAG = this::class.java.simpleName
 
-    lateinit var tracker: KochavaTrackable
+    var tracker: KochavaTrackable
     /**
      * Handles the incoming RemoteCommand response data. Prepares the command and payload for parsing.
      *
@@ -37,12 +28,10 @@ open class KochavaRemoteCommand : RemoteCommand {
         application: Application,
         appGuid: String,
         commandId: String = DEFAULT_COMMAND_ID,
-        description: String = DEFAULT_COMMAND_DESCRIPTION
-    ): super(commandId, description) {
-        tracker = KochavaTracker(application, appGuid)
-//        tracker = Tracker.configure(Tracker.Configuration(application.applicationContext).setAppGuid(appGuid))
-//        tracker.initialize(application, appGuid)
-
+        description: String = DEFAULT_COMMAND_DESCRIPTION,
+        tracker: KochavaTrackable = KochavaTracker(application, appGuid)
+    ) : super(commandId, description) {
+        this.tracker = tracker
     }
 
     companion object {
@@ -113,7 +102,7 @@ open class KochavaRemoteCommand : RemoteCommand {
         }
     }
 
-    fun customEvent(eventName: String,  payload: JSONObject) {
+    fun customEvent(eventName: String, payload: JSONObject) {
         val eventParams = createStandardParams(payload)
         tracker.customEvent(eventName, eventParams)
     }
@@ -280,7 +269,7 @@ open class KochavaRemoteCommand : RemoteCommand {
             stdParams.put(Parameters.USER_ID, userId)
             stdParams.put(Parameters.NAME, name)
             stdParams.put(Parameters.CONTENT_ID, contentId)
-            if(!quantity.isNaN()) {
+            if (!quantity.isNaN()) {
                 stdParams.put(Parameters.QUANTITY, quantity)
             }
             stdParams.put(Parameters.REFERRAL_FROM, referralFrom)
@@ -303,10 +292,10 @@ open class KochavaRemoteCommand : RemoteCommand {
             println("rating custom")
             // combine custom and standard params
             val stdParams = JSONObject()
-            if(!value.isNaN()) {
+            if (!value.isNaN()) {
                 stdParams.put(Parameters.RATING_VALUE, value)
             }
-            if(!maxRating.isNaN()) {
+            if (!maxRating.isNaN()) {
                 stdParams.put(Parameters.MAX_RATING_VALUE, maxRating)
             }
 
@@ -344,7 +333,15 @@ open class KochavaRemoteCommand : RemoteCommand {
             tracker.customEvent("Ad View", mergedParams)
         } ?: run {
             println("ad view standard")
-            tracker.adview(type, networkName, placement, mediationName, campaignId, campaignName, size)
+            tracker.adview(
+                type,
+                networkName,
+                placement,
+                mediationName,
+                campaignId,
+                campaignName,
+                size
+            )
         }
     }
 
@@ -362,7 +359,7 @@ open class KochavaRemoteCommand : RemoteCommand {
             stdParams.put(Parameters.USER_ID, userid)
             stdParams.put(Parameters.NAME, name)
             println("duration " + duration)
-            if(!duration.isNaN()) {
+            if (!duration.isNaN()) {
                 stdParams.put(Parameters.DURATION, duration)
             }
 
@@ -388,7 +385,7 @@ open class KochavaRemoteCommand : RemoteCommand {
             val stdParams = JSONObject()
             stdParams.put(Parameters.USER_ID, userid)
             stdParams.put(Parameters.NAME, name)
-            if(!duration.isNaN()) {
+            if (!duration.isNaN()) {
                 stdParams.put(Parameters.DURATION, duration)
             }
 //            val stdParams = createStandardParams(level)
@@ -427,7 +424,7 @@ open class KochavaRemoteCommand : RemoteCommand {
             stdParams.put(Parameters.USER_ID, userid)
             stdParams.put(Parameters.NAME, name)
             stdParams.put(Parameters.CONTENT_ID, contentid)
-            if(!price.isNaN()) {
+            if (!price.isNaN()) {
                 stdParams.put(Parameters.PRICE, price)
             }
             stdParams.put(Parameters.CURRENCY, currency)
@@ -531,13 +528,13 @@ open class KochavaRemoteCommand : RemoteCommand {
         stdParams.put(Parameters.DATE, date)
         stdParams.put(Parameters.DESCRIPTION, description)
         stdParams.put(Parameters.DESTINATION, destination)
-        if(!duration.isNaN()) {
+        if (!duration.isNaN()) {
             stdParams.put(Parameters.DURATION, duration)
         }
         stdParams.put(Parameters.END_DATE, end_date)
         stdParams.put(Parameters.PLACEMENT, placement)
         stdParams.put(Parameters.LEVEL, level)
-        if(!max_rating_value.isNaN()) {
+        if (!max_rating_value.isNaN()) {
             stdParams.put(Parameters.MAX_RATING_VALUE, max_rating_value)
         }
         stdParams.put(Parameters.ORDER_ID, order_id)
@@ -550,13 +547,13 @@ open class KochavaRemoteCommand : RemoteCommand {
         stdParams.put(Parameters.SUCCESS, success)
         stdParams.put(Parameters.USER_NAME, username)
         stdParams.put(Parameters.VALIDATED, validated)
-        if(!spatial_x.isNaN()) {
+        if (!spatial_x.isNaN()) {
             stdParams.put(Parameters.SPATIAL_X, spatial_x)
         }
-        if(!spatial_y.isNaN()) {
+        if (!spatial_y.isNaN()) {
             stdParams.put(Parameters.SPATIAL_Y, spatial_y)
         }
-        if(!spatial_z.isNaN()) {
+        if (!spatial_z.isNaN()) {
             stdParams.put(Parameters.SPATIAL_Z, spatial_z)
         }
         stdParams.put(Parameters.BACKGROUND, background)
@@ -570,13 +567,13 @@ open class KochavaRemoteCommand : RemoteCommand {
         stdParams.put(Parameters.ITEM_ADDED_FROM, item_added_from)
         stdParams.put(Parameters.USER_ID, userid)
         stdParams.put(Parameters.NAME, name)
-        if(!price.isNaN()) {
+        if (!price.isNaN()) {
             stdParams.put(Parameters.PRICE, price)
         }
-        if(!quantity.isNaN()) {
+        if (!quantity.isNaN()) {
             stdParams.put(Parameters.QUANTITY, quantity)
         }
-        if(!rating_value.isNaN()) {
+        if (!rating_value.isNaN()) {
             stdParams.put(Parameters.RATING_VALUE, rating_value)
         }
         stdParams.put(Parameters.CHECKOUT_AS_GUEST, checkout_as_guest)
