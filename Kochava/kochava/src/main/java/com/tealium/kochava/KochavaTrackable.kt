@@ -29,6 +29,6 @@ interface KochavaTrackable {
     fun achievement(userId: String = "", name: String = "", duration: Double = 0.0)
 
     // custom events
-    fun customEvent(eventName: String, parameters: JSONObject)
+    fun customEvent(eventName: String, parameters: String)
 
 }

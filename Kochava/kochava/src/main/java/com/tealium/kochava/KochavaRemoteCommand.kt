@@ -57,7 +57,6 @@ open class KochavaRemoteCommand : RemoteCommand {
      */
     fun parseCommands(commands: Array<String>, payload: JSONObject) {
         commands.forEach { command ->
-            println("commands " + command)
             when (command) {
                 Commands.PURCHASE -> {
                     purchase(payload)
@@ -96,15 +95,16 @@ open class KochavaRemoteCommand : RemoteCommand {
                     achieve(payload)
                 }
                 else -> {
-                    customEvent(command, payload)
+                    logCustomEvent(command, payload)
                 }
             }
         }
     }
 
-    fun customEvent(eventName: String, payload: JSONObject) {
-        val eventParams = createStandardParams(payload)
-        tracker.customEvent(eventName, eventParams)
+    fun logCustomEvent(eventName: String, payload: JSONObject) {
+//        val eventParams = createStandardParams(payload)
+//        val mergedParams = mergeJSONObjects(payload, eventParams)
+        tracker.customEvent(eventName, payload.toString())
     }
 
     fun achieve(achievement: JSONObject) {
@@ -115,17 +115,17 @@ open class KochavaRemoteCommand : RemoteCommand {
         val parameters: JSONObject? = achievement.optJSONObject(Parameters.CUSTOM_PARAMETERS)
 
         parameters?.let {
-            println("achieve custom")
             // combine custom and standard params
             val stdParams = JSONObject()
             stdParams.put(Parameters.USER_ID, userId)
             stdParams.put(Parameters.NAME, name)
-            stdParams.put(Parameters.DURATION, duration)
+            if (!duration.isNaN()) {
+                stdParams.put(Parameters.DURATION, duration)
+            }
 
             val mergedParams = mergeJSONObjects(stdParams, parameters)
-            tracker.customEvent("Achievement", mergedParams)
+            tracker.customEvent("Achievement", mergedParams.toString())
         } ?: run {
-            println("achieve standard")
             tracker.achievement(userId, name, duration)
         }
     }
@@ -138,10 +138,7 @@ open class KochavaRemoteCommand : RemoteCommand {
 
         val parameters: JSONObject? = view.optJSONObject(Parameters.CUSTOM_PARAMETERS)
 
-        println("params " + parameters)
-
         parameters?.let {
-            println("view custom")
             // combine custom and standard params
             val stdParams = JSONObject()
             stdParams.put(Parameters.USER_ID, userId)
@@ -150,9 +147,8 @@ open class KochavaRemoteCommand : RemoteCommand {
             stdParams.put(Parameters.REFERRAL_FROM, referralFrom)
 
             val mergedParams = mergeJSONObjects(stdParams, parameters)
-            tracker.customEvent("View", mergedParams)
+            tracker.customEvent("View", mergedParams.toString())
         } ?: run {
-            println("view standard")
             tracker.view(userId, name, contentId, referralFrom)
         }
     }
@@ -165,7 +161,6 @@ open class KochavaRemoteCommand : RemoteCommand {
         val parameters: JSONObject? = registration.optJSONObject(Parameters.CUSTOM_PARAMETERS)
 
         parameters?.let {
-            println("register custom")
             // combine custom and standard params
             val stdParams = JSONObject()
             stdParams.put(Parameters.USER_ID, userId)
@@ -173,9 +168,8 @@ open class KochavaRemoteCommand : RemoteCommand {
             stdParams.put(Parameters.REFERRAL_FROM, referralFrom)
 
             val mergedParams = mergeJSONObjects(stdParams, parameters)
-            tracker.customEvent("Registration Complete", mergedParams)
+            tracker.customEvent("Registration Complete", mergedParams.toString())
         } ?: run {
-            println("register standard")
             tracker.registrationComplete(userId, userName, referralFrom)
         }
     }
@@ -187,16 +181,14 @@ open class KochavaRemoteCommand : RemoteCommand {
         val parameters: JSONObject? = search.optJSONObject(Parameters.CUSTOM_PARAMETERS)
 
         parameters?.let {
-            println("search custom")
             // combine custom and standard params
             val stdParams = JSONObject()
             stdParams.put(Parameters.URI, uri)
             stdParams.put(Parameters.RESULTS, results)
 
             val mergedParams = mergeJSONObjects(stdParams, parameters)
-            tracker.customEvent("Search", mergedParams)
+            tracker.customEvent("Search", mergedParams.toString())
         } ?: run {
-            println("search standard")
             tracker.search(uri, results)
         }
     }
@@ -211,7 +203,6 @@ open class KochavaRemoteCommand : RemoteCommand {
         val parameters: JSONObject? = checkoutStart.optJSONObject(Parameters.CUSTOM_PARAMETERS)
 
         parameters?.let {
-            println("checkout start custom")
             // combine custom and standard params
             val stdParams = JSONObject()
             stdParams.put(Parameters.USER_ID, userId)
@@ -221,9 +212,8 @@ open class KochavaRemoteCommand : RemoteCommand {
             stdParams.put(Parameters.CURRENCY, currency)
 
             val mergedParams = mergeJSONObjects(stdParams, parameters)
-            tracker.customEvent("Checkout Start", mergedParams)
+            tracker.customEvent("Checkout Start", mergedParams.toString())
         } ?: run {
-            println("checkout start standard")
             tracker.checkoutStart(userId, name, contentId, guestCheckout, currency)
         }
     }
@@ -237,7 +227,6 @@ open class KochavaRemoteCommand : RemoteCommand {
         val parameters: JSONObject? = wishlist.optJSONObject(Parameters.CUSTOM_PARAMETERS)
 
         parameters?.let {
-            println("custom add to wishlist")
             // combine custom and standard params
             val stdParams = JSONObject()
             stdParams.put(Parameters.USER_ID, userId)
@@ -246,9 +235,8 @@ open class KochavaRemoteCommand : RemoteCommand {
             stdParams.put(Parameters.REFERRAL_FROM, referralFrom)
 
             val mergedParams = mergeJSONObjects(stdParams, parameters)
-            tracker.customEvent("Add To Wishlist", mergedParams)
+            tracker.customEvent("Add To Wishlist", mergedParams.toString())
         } ?: run {
-            println("standard add to wishlist")
             tracker.addToWishList(userId, name, contentId, referralFrom)
         }
     }
@@ -263,7 +251,6 @@ open class KochavaRemoteCommand : RemoteCommand {
         val parameters: JSONObject? = cart.optJSONObject(Parameters.CUSTOM_PARAMETERS)
 
         parameters?.let {
-            println("custom add to cart")
             // combine custom and standard params
             val stdParams = JSONObject()
             stdParams.put(Parameters.USER_ID, userId)
@@ -275,9 +262,8 @@ open class KochavaRemoteCommand : RemoteCommand {
             stdParams.put(Parameters.REFERRAL_FROM, referralFrom)
 
             val mergedParams = mergeJSONObjects(stdParams, parameters)
-            tracker.customEvent("Add To Cart", mergedParams)
+            tracker.customEvent("Add To Cart", mergedParams.toString())
         } ?: run {
-            println("standard add to cart")
             tracker.addToCart(userId, name, contentId, quantity, referralFrom)
         }
     }
@@ -289,7 +275,6 @@ open class KochavaRemoteCommand : RemoteCommand {
         val parameters: JSONObject? = rating.optJSONObject(Parameters.CUSTOM_PARAMETERS)
 
         parameters?.let {
-            println("rating custom")
             // combine custom and standard params
             val stdParams = JSONObject()
             if (!value.isNaN()) {
@@ -300,9 +285,8 @@ open class KochavaRemoteCommand : RemoteCommand {
             }
 
             val mergedParams = mergeJSONObjects(stdParams, parameters)
-            tracker.customEvent("Rating", mergedParams)
+            tracker.customEvent("Rating", mergedParams.toString())
         } ?: run {
-            println("rating standard")
             tracker.rating(value, maxRating)
         }
     }
@@ -319,7 +303,6 @@ open class KochavaRemoteCommand : RemoteCommand {
         val parameters: JSONObject? = adview.optJSONObject(Parameters.CUSTOM_PARAMETERS)
 
         parameters?.let {
-            println("ad view custom")
             // combine custom and standard params
             val stdParams = JSONObject()
             stdParams.put(Parameters.USER_ID, type)
@@ -330,9 +313,8 @@ open class KochavaRemoteCommand : RemoteCommand {
             stdParams.put(Parameters.DURATION, campaignName)
 
             val mergedParams = mergeJSONObjects(stdParams, parameters)
-            tracker.customEvent("Ad View", mergedParams)
+            tracker.customEvent("Ad View", mergedParams.toString())
         } ?: run {
-            println("ad view standard")
             tracker.adview(
                 type,
                 networkName,
@@ -358,16 +340,14 @@ open class KochavaRemoteCommand : RemoteCommand {
             val stdParams = JSONObject()
             stdParams.put(Parameters.USER_ID, userid)
             stdParams.put(Parameters.NAME, name)
-            println("duration " + duration)
             if (!duration.isNaN()) {
                 stdParams.put(Parameters.DURATION, duration)
             }
 
             val mergedParams = mergeJSONObjects(stdParams, parameters)
 
-            tracker.customEvent("Tutorial Complete", mergedParams)
+            tracker.customEvent("Tutorial Complete", mergedParams.toString())
         } ?: run {
-            println("standard tutorial complete")
             tracker.tutorialLevelComplete("Tutorial Complete", userid, name, duration)
         }
     }
@@ -380,7 +360,6 @@ open class KochavaRemoteCommand : RemoteCommand {
         val parameters: JSONObject? = level.optJSONObject(Parameters.CUSTOM_PARAMETERS)
 
         parameters?.let {
-            println("level complete custom")
             // combine custom and standard params
             val stdParams = JSONObject()
             stdParams.put(Parameters.USER_ID, userid)
@@ -388,36 +367,23 @@ open class KochavaRemoteCommand : RemoteCommand {
             if (!duration.isNaN()) {
                 stdParams.put(Parameters.DURATION, duration)
             }
-//            val stdParams = createStandardParams(level)
             val mergedParams = mergeJSONObjects(stdParams, parameters)
 
-            tracker.customEvent("Level Complete", mergedParams)
+            tracker.customEvent("Level Complete", mergedParams.toString())
         } ?: run {
-            println("level complete standard")
             tracker.tutorialLevelComplete("Level Complete", userid, name, duration)
         }
     }
 
     fun purchase(purchase: JSONObject) {
-        println("Purchase called")
         val userid = purchase.optString(Parameters.USER_ID)
         val name = purchase.optString(Parameters.NAME)
         val contentid = purchase.optString(Parameters.CONTENT_ID)
         val price = purchase.optDouble(Parameters.PRICE) as Double
-
-//        price?.let {
-//            if (it.isNaN()) {
-//                return
-//            }
-//        }
-        println("userid " + userid)
         val currency = purchase.optString(Parameters.CURRENCY)
         val guestCheckout = purchase.optString(Parameters.CHECKOUT_AS_GUEST)
         val parameters: JSONObject? = purchase.optJSONObject(Parameters.CUSTOM_PARAMETERS)
 
-        println(userid + " " + name + " " + contentid + " " + price)
-        println("parameters " + parameters)
-        println("purchase json " + purchase)
         parameters?.let {
             // combine custom and standard params
             val stdParams = JSONObject()
@@ -429,15 +395,10 @@ open class KochavaRemoteCommand : RemoteCommand {
             }
             stdParams.put(Parameters.CURRENCY, currency)
             stdParams.put(Parameters.CHECKOUT_AS_GUEST, guestCheckout)
-
-//            val stdParams = createStandardParams(purchase)
             val mergedParams = mergeJSONObjects(stdParams, parameters)
 
-            println("merged params " + mergedParams)
-
-            tracker.customEvent("Purchase", mergedParams)
+            tracker.customEvent("Purchase", mergedParams.toString())
         } ?: run {
-            println("in purchase block")
             tracker.purchase(userid, name, contentid, price, currency, guestCheckout)
         }
 
@@ -449,14 +410,14 @@ open class KochavaRemoteCommand : RemoteCommand {
         val merged = JSONObject()
         while (iter1.hasNext()) {
             val key = iter1.next()
-            if (json1.get(key) != null) {
+            if (json1.get(key) != null && json1.get(key) != "") {
                 merged.put(key, json1.get(key))
             }
         }
 
         while (iter2.hasNext()) {
             val key = iter2.next()
-            if (json2.get(key) != null) {
+            if (json2.get(key) != null && json2.get(key) != "") {
                 merged.put(key, json2.get(key))
             }
         }
@@ -514,39 +475,93 @@ open class KochavaRemoteCommand : RemoteCommand {
         val quantity = payload.optDouble(Parameters.QUANTITY)
         val price = payload.optDouble(Parameters.PRICE)
 
-        stdParams.put(Parameters.AD_TYPE, ad_type)
-        stdParams.put(Parameters.AD_CAMPAIGN_ID, ad_campaign_id)
-        stdParams.put(Parameters.AD_CAMPAIGN_NAME, ad_campaign_name)
-        stdParams.put(Parameters.AD_SIZE, ad_size)
-        stdParams.put(Parameters.AD_GROUP_NAME, ad_group_name)
-        stdParams.put(Parameters.AD_GROUP_ID, ad_group_id)
-        stdParams.put(Parameters.AD_NETWORK_NAME, ad_network_name)
-        stdParams.put(Parameters.AD_MEDIATION_NAME, ad_mediation_name)
-        stdParams.put(Parameters.CONTENT_ID, content_id)
-        stdParams.put(Parameters.CONTENT_TYPE, content_type)
-        stdParams.put(Parameters.DEVICE_TYPE, device_type)
-        stdParams.put(Parameters.DATE, date)
-        stdParams.put(Parameters.DESCRIPTION, description)
-        stdParams.put(Parameters.DESTINATION, destination)
+        if (ad_type != "") {
+            stdParams.put(Parameters.AD_TYPE, ad_type)
+        }
+        if (ad_campaign_id != "") {
+            stdParams.put(Parameters.AD_CAMPAIGN_ID, ad_campaign_id)
+        }
+        if (ad_campaign_name != "") {
+            stdParams.put(Parameters.AD_CAMPAIGN_NAME, ad_campaign_name)
+        }
+        if (ad_size != "") {
+            stdParams.put(Parameters.AD_SIZE, ad_size)
+        }
+        if (ad_group_name != "") {
+            stdParams.put(Parameters.AD_GROUP_NAME, ad_group_name)
+        }
+        if (ad_group_id != "") {
+            stdParams.put(Parameters.AD_GROUP_ID, ad_group_id)
+        }
+        if (ad_network_name != "") {
+            stdParams.put(Parameters.AD_NETWORK_NAME, ad_network_name)
+        }
+        if (ad_mediation_name != "") {
+            stdParams.put(Parameters.AD_MEDIATION_NAME, ad_mediation_name)
+        }
+        if (content_id != "") {
+            stdParams.put(Parameters.CONTENT_ID, content_id)
+        }
+        if (content_type != "") {
+            stdParams.put(Parameters.CONTENT_TYPE, content_type)
+        }
+        if (device_type != "") {
+            stdParams.put(Parameters.DEVICE_TYPE, device_type)
+        }
+        if (date != "") {
+            stdParams.put(Parameters.DATE, date)
+        }
+        if (description != "") {
+            stdParams.put(Parameters.DESCRIPTION, description)
+        }
+        if (destination != "") {
+            stdParams.put(Parameters.DESTINATION, destination)
+        }
         if (!duration.isNaN()) {
             stdParams.put(Parameters.DURATION, duration)
         }
-        stdParams.put(Parameters.END_DATE, end_date)
-        stdParams.put(Parameters.PLACEMENT, placement)
-        stdParams.put(Parameters.LEVEL, level)
+        if (end_date != "") {
+            stdParams.put(Parameters.END_DATE, end_date)
+        }
+        if (placement != "") {
+            stdParams.put(Parameters.PLACEMENT, placement)
+        }
+        if (level != "") {
+            stdParams.put(Parameters.LEVEL, level)
+        }
         if (!max_rating_value.isNaN()) {
             stdParams.put(Parameters.MAX_RATING_VALUE, max_rating_value)
         }
-        stdParams.put(Parameters.ORDER_ID, order_id)
-        stdParams.put(Parameters.ORIGIN, origin)
-        stdParams.put(Parameters.CURRENCY, currency)
-        stdParams.put(Parameters.RESULTS, results)
-        stdParams.put(Parameters.SCORE, score)
-        stdParams.put(Parameters.SEARCH_TERM, search_term)
-        stdParams.put(Parameters.START_DATE, start_date)
-        stdParams.put(Parameters.SUCCESS, success)
-        stdParams.put(Parameters.USER_NAME, username)
-        stdParams.put(Parameters.VALIDATED, validated)
+        if (order_id != "") {
+            stdParams.put(Parameters.ORDER_ID, order_id)
+        }
+        if (origin != "") {
+            stdParams.put(Parameters.ORIGIN, origin)
+        }
+        if (currency != "") {
+            stdParams.put(Parameters.CURRENCY, currency)
+        }
+        if (results != "") {
+            stdParams.put(Parameters.RESULTS, results)
+        }
+        if (score != "") {
+            stdParams.put(Parameters.SCORE, score)
+        }
+        if (search_term != "") {
+            stdParams.put(Parameters.SEARCH_TERM, search_term)
+        }
+        if (start_date != "") {
+            stdParams.put(Parameters.START_DATE, start_date)
+        }
+        if (success != "") {
+            stdParams.put(Parameters.SUCCESS, success)
+        }
+        if (username != "") {
+            stdParams.put(Parameters.USER_NAME, username)
+        }
+        if (validated != "") {
+            stdParams.put(Parameters.VALIDATED, validated)
+        }
         if (!spatial_x.isNaN()) {
             stdParams.put(Parameters.SPATIAL_X, spatial_x)
         }
@@ -556,17 +571,39 @@ open class KochavaRemoteCommand : RemoteCommand {
         if (!spatial_z.isNaN()) {
             stdParams.put(Parameters.SPATIAL_Z, spatial_z)
         }
-        stdParams.put(Parameters.BACKGROUND, background)
-        stdParams.put(Parameters.ACTION, action)
-        stdParams.put(Parameters.COMPLETED, completed)
-        stdParams.put(Parameters.RECEIPT_ID, receipt_id)
-        stdParams.put(Parameters.REFERRAL_FROM, referral_from)
-        stdParams.put(Parameters.REGISTRATION_METHOD, registration_method)
-        stdParams.put(Parameters.URI, uri)
-        stdParams.put(Parameters.SOURCE, source)
-        stdParams.put(Parameters.ITEM_ADDED_FROM, item_added_from)
-        stdParams.put(Parameters.USER_ID, userid)
-        stdParams.put(Parameters.NAME, name)
+        if (background == true || background == false) {
+            stdParams.put(Parameters.BACKGROUND, background)
+        }
+        if (action != "") {
+            stdParams.put(Parameters.ACTION, action)
+        }
+        if (completed == true || completed == false) {
+            stdParams.put(Parameters.COMPLETED, completed)
+        }
+        if (receipt_id != "") {
+            stdParams.put(Parameters.RECEIPT_ID, receipt_id)
+        }
+        if (referral_from != "") {
+            stdParams.put(Parameters.REFERRAL_FROM, referral_from)
+        }
+        if (registration_method != "") {
+            stdParams.put(Parameters.REGISTRATION_METHOD, registration_method)
+        }
+        if (uri != "") {
+            stdParams.put(Parameters.URI, uri)
+        }
+        if (source != "") {
+            stdParams.put(Parameters.SOURCE, source)
+        }
+        if (item_added_from != "") {
+            stdParams.put(Parameters.ITEM_ADDED_FROM, item_added_from)
+        }
+        if (userid != "") {
+            stdParams.put(Parameters.USER_ID, userid)
+        }
+        if (name != "") {
+            stdParams.put(Parameters.NAME, name)
+        }
         if (!price.isNaN()) {
             stdParams.put(Parameters.PRICE, price)
         }
@@ -576,7 +613,9 @@ open class KochavaRemoteCommand : RemoteCommand {
         if (!rating_value.isNaN()) {
             stdParams.put(Parameters.RATING_VALUE, rating_value)
         }
-        stdParams.put(Parameters.CHECKOUT_AS_GUEST, checkout_as_guest)
+        if (checkout_as_guest != "") {
+            stdParams.put(Parameters.CHECKOUT_AS_GUEST, checkout_as_guest)
+        }
 
         return stdParams
     }

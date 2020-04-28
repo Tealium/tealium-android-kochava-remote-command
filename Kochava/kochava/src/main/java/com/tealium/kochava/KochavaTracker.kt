@@ -13,15 +13,7 @@ class KochavaTracker(application: Application, applicationId: String) : KochavaT
         )
     }
 
-//    override fun initialize(application: Application, applicationId: String) {
-//        // Start the Kochava Tracker
-//        Tracker.configure(Tracker.Configuration(application.applicationContext)
-//            .setAppGuid(applicationId)
-//        )
-//    }
-
     override fun tutorialLevelComplete(eventName: String, userId: String, name: String, duration: Double) {
-        println("track event tutorial level complete ")
         Tracker.sendEvent(
             Tracker.Event(Tracker.EVENT_TYPE_TUTORIAL_COMPLETE)
                 .setUserId(userId)
@@ -31,7 +23,6 @@ class KochavaTracker(application: Application, applicationId: String) : KochavaT
     }
 
     override fun purchase (userId: String, name: String, contentId: String, price: Double, currency: String, guestCheckout: String) {
-        println("track event purchase " + userId + " " + name + " " + contentId + " " + price + " " + currency + " " + guestCheckout)
         Tracker.sendEvent(
             Tracker.Event(Tracker.EVENT_TYPE_PURCHASE)
                 .setUserId(userId)
@@ -41,7 +32,6 @@ class KochavaTracker(application: Application, applicationId: String) : KochavaT
                 .setCurrency(currency)
                 .setCheckoutAsGuest(guestCheckout)
         )
-        println("after track event purchase kochava")
     }
 
     override fun adview(
@@ -53,7 +43,6 @@ class KochavaTracker(application: Application, applicationId: String) : KochavaT
         campaignName: String,
         size: String
     ) {
-        println("adview tracker")
         Tracker.sendEvent(
             Tracker.Event(Tracker.EVENT_TYPE_AD_VIEW)
                 .setAdType(type)
@@ -147,9 +136,7 @@ class KochavaTracker(application: Application, applicationId: String) : KochavaT
             .setDuration(duration)
     }
 
-    override fun customEvent(eventName: String, parameters: JSONObject) {
-        println("calling custom")
-        Tracker.sendEvent(eventName, parameters.toString())
-        println("finished calling custom")
+    override fun customEvent(eventName: String, parameters: String) {
+        Tracker.sendEvent(eventName, parameters)
     }
 }
