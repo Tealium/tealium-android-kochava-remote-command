@@ -1,10 +1,6 @@
 package com.tealium.kochava
 
-import android.app.Application
-import org.json.JSONObject
-
 interface KochavaTrackable {
-
 
     // standard events
     // Gaming

@@ -2,10 +2,8 @@ package com.tealium.kochava
 
 import android.app.Application
 import com.kochava.base.Tracker
-import org.json.JSONObject
 
 class KochavaTracker(application: Application, applicationId: String) : KochavaTrackable {
-
 
     init {
         Tracker.configure(Tracker.Configuration(application.applicationContext)
