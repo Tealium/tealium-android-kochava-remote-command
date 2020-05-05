@@ -1,23 +1,21 @@
-package com.tealium.kochava
-
-//@file:JvmName("KochavaConstants")
+@file:JvmName("KochavaConstants")
 
 object Commands {
     const val COMMAND_KEY = "command_name"
     const val SEPARATOR = ","
 
-    const val PURCHASE = "purchase"
-    const val TUTORIAL_COMPLETE = "tutorialcomplete"
-    const val LEVEL_COMPLETE = "levelcomplete"
-    const val AD_VIEW = "adview"
-    const val RATING = "rating"
-    const val ADD_TO_CART = "addtocart"
-    const val ADD_TO_WISH_LIST = "addtowishlist"
-    const val CHECKOUT_START = "checkoutstart"
-    const val SEARCH = "search"
-    const val REGISTRATION_COMPLETE = "registrationcomplete"
-    const val VIEW = "view"
-    const val ACHIEVEMENT = "achievment"
+    const val PURCHASE = "Purchase"
+    const val TUTORIAL_COMPLETE = "Tutorial Complete"
+    const val LEVEL_COMPLETE = "Level Complete"
+    const val AD_VIEW = "Ad View"
+    const val RATING = "Rating"
+    const val ADD_TO_CART = "Add To Cart"
+    const val ADD_TO_WISH_LIST = "Add to Wish List"
+    const val CHECKOUT_START = "Checkout Start"
+    const val SEARCH = "Search"
+    const val REGISTRATION_COMPLETE = "Registration Complete"
+    const val VIEW = "View"
+    const val ACHIEVEMENT = "Achievement"
 }
 
 object Parameters {
@@ -44,9 +42,9 @@ object Parameters {
     const val COMPLETED = "completed"
     const val ACTION = "action"
     const val BACKGROUND = "background"
-    const val SPATIAL_Z = "spatial_z"
-    const val SPATIAL_Y = "spatial_y"
     const val SPATIAL_X = "spatial_x"
+    const val SPATIAL_Y = "spatial_y"
+    const val SPATIAL_Z = "spatial_z"
     const val VALIDATED = "validated"
     const val USER_NAME = "user_name"
     const val USER_ID = "user_id"

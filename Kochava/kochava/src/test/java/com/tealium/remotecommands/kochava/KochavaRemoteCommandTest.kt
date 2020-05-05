@@ -1,12 +1,11 @@
 package com.tealium.remotecommands.kochava;
 
-
+import Commands
+import Parameters
 import android.app.Application
 import android.content.Context
-import com.tealium.kochava.Commands
 import com.tealium.kochava.KochavaRemoteCommand
 import com.tealium.kochava.KochavaTrackable
-import com.tealium.kochava.Parameters
 import io.mockk.*
 import io.mockk.impl.annotations.MockK
 import org.json.JSONObject
@@ -41,13 +40,13 @@ class KochavaRemoteCommandTest {
     @Test
     fun splitCommands() {
         val json = JSONObject()
-        json.put("command_name", "purchase, tutorialcomplete, checkoutstart")
+        json.put("command_name", "Purchase,Tutorial Complete,Checkout Start")
         val commands = kochavaRemoteCommand.splitCommands(json)
 
         assertEquals(3, commands.count())
         assertEquals("purchase", commands[0])
-        assertEquals("tutorialcomplete", commands[1])
-        assertEquals("checkoutstart", commands[2])
+        assertEquals("tutorial complete", commands[1])
+        assertEquals("checkout start", commands[2])
     }
 
     @Test
@@ -83,7 +82,7 @@ class KochavaRemoteCommandTest {
         kochavaRemoteCommand.parseCommands(arrayOf(Commands.PURCHASE), parameters)
 
         verify {
-            mockTracker.customEvent("Purchase", info_dictionary.toString())
+            mockTracker.customEvent(Commands.PURCHASE, info_dictionary.toString())
         }
         confirmVerified(mockTracker)
     }
@@ -99,7 +98,7 @@ class KochavaRemoteCommandTest {
 
         kochavaRemoteCommand.parseCommands(arrayOf(Commands.TUTORIAL_COMPLETE), tutorialProperties)
         verify {
-            mockTracker.tutorialLevelComplete("Tutorial Complete", "10", "tutorial", 10.50)
+            mockTracker.tutorialLevelComplete(Commands.TUTORIAL_COMPLETE, "10", "tutorial", 10.50)
         }
         confirmVerified(mockTracker)
     }
@@ -117,7 +116,7 @@ class KochavaRemoteCommandTest {
 
         kochavaRemoteCommand.parseCommands(arrayOf(Commands.TUTORIAL_COMPLETE), parameters)
         verify {
-            mockTracker.customEvent("Tutorial Complete", info_dictionary.toString())
+            mockTracker.customEvent(Commands.TUTORIAL_COMPLETE, info_dictionary.toString())
         }
         confirmVerified(mockTracker)
     }
@@ -133,7 +132,7 @@ class KochavaRemoteCommandTest {
 
         kochavaRemoteCommand.parseCommands(arrayOf(Commands.LEVEL_COMPLETE), tutorialProperties)
         verify {
-            mockTracker.tutorialLevelComplete("Level Complete", "10", "level", 10.50)
+            mockTracker.tutorialLevelComplete(Commands.LEVEL_COMPLETE, "10", "level", 10.50)
         }
         confirmVerified(mockTracker)
     }
@@ -151,7 +150,7 @@ class KochavaRemoteCommandTest {
 
         kochavaRemoteCommand.parseCommands(arrayOf(Commands.LEVEL_COMPLETE), parameters)
         verify {
-            mockTracker.customEvent("Level Complete", info_dictionary.toString())
+            mockTracker.customEvent(Commands.LEVEL_COMPLETE, info_dictionary.toString())
         }
         confirmVerified(mockTracker)
     }
@@ -167,11 +166,11 @@ class KochavaRemoteCommandTest {
         adviewProperties.put(Parameters.AD_CAMPAIGN_NAME, "campaign")
         adviewProperties.put(Parameters.AD_SIZE, "5")
 
-        every { mockTracker.adview(any(), any(), any(), any(), any(), any(), any()) } just Runs
+        every { mockTracker.adView(any(), any(), any(), any(), any(), any(), any()) } just Runs
 
         kochavaRemoteCommand.parseCommands(arrayOf(Commands.AD_VIEW), adviewProperties)
         verify {
-            mockTracker.adview("type", "tutorial", "placement", "mediation", "100", "campaign", "5")
+            mockTracker.adView("type", "tutorial", "placement", "mediation", "100", "campaign", "5")
         }
         confirmVerified(mockTracker)
     }
@@ -191,7 +190,7 @@ class KochavaRemoteCommandTest {
 
         kochavaRemoteCommand.parseCommands(arrayOf(Commands.AD_VIEW), parameters)
         verify {
-            mockTracker.customEvent("Ad View", info_dictionary.toString())
+            mockTracker.customEvent(Commands.AD_VIEW, info_dictionary.toString())
         }
         confirmVerified(mockTracker)
     }
@@ -230,7 +229,7 @@ class KochavaRemoteCommandTest {
 
         kochavaRemoteCommand.parseCommands(arrayOf(Commands.RATING), ratingProperties)
         verify {
-            mockTracker.customEvent("Rating", mergedParams.toString())
+            mockTracker.customEvent(Commands.RATING, mergedParams.toString())
         }
         confirmVerified(mockTracker)
     }
@@ -271,7 +270,7 @@ class KochavaRemoteCommandTest {
 
         kochavaRemoteCommand.parseCommands(arrayOf(Commands.ADD_TO_CART), cartProperties)
         verify {
-            mockTracker.customEvent("Add To Cart", mergedParams.toString())
+            mockTracker.customEvent(Commands.ADD_TO_CART, mergedParams.toString())
         }
         confirmVerified(mockTracker)
     }
@@ -311,7 +310,7 @@ class KochavaRemoteCommandTest {
 
         kochavaRemoteCommand.parseCommands(arrayOf(Commands.ADD_TO_WISH_LIST), wishlistProperties)
         verify {
-            mockTracker.customEvent("Add To Wishlist", mergedParams.toString())
+            mockTracker.customEvent(Commands.ADD_TO_WISH_LIST, mergedParams.toString())
         }
         confirmVerified(mockTracker)
     }
@@ -350,7 +349,7 @@ class KochavaRemoteCommandTest {
 
         kochavaRemoteCommand.parseCommands(arrayOf(Commands.CHECKOUT_START), checkoutProperties)
         verify {
-            mockTracker.customEvent("Checkout Start", mergedParams.toString())
+            mockTracker.customEvent(Commands.CHECKOUT_START, mergedParams.toString())
         }
         confirmVerified(mockTracker)
     }
@@ -388,7 +387,7 @@ class KochavaRemoteCommandTest {
 
         kochavaRemoteCommand.parseCommands(arrayOf(Commands.SEARCH), searchProperties)
         verify {
-            mockTracker.customEvent("Search", mergedParams.toString())
+            mockTracker.customEvent(Commands.SEARCH, mergedParams.toString())
         }
         confirmVerified(mockTracker)
     }
@@ -435,7 +434,7 @@ class KochavaRemoteCommandTest {
             registrationProperties
         )
         verify {
-            mockTracker.customEvent("Registration Complete", mergedParams.toString())
+            mockTracker.customEvent(Commands.REGISTRATION_COMPLETE, mergedParams.toString())
         }
         confirmVerified(mockTracker)
     }
@@ -475,7 +474,7 @@ class KochavaRemoteCommandTest {
 
         kochavaRemoteCommand.parseCommands(arrayOf(Commands.VIEW), viewProperties)
         verify {
-            mockTracker.customEvent("View", mergedParams.toString())
+            mockTracker.customEvent(Commands.VIEW, mergedParams.toString())
         }
         confirmVerified(mockTracker)
     }
@@ -514,25 +513,42 @@ class KochavaRemoteCommandTest {
 
         kochavaRemoteCommand.parseCommands(arrayOf(Commands.ACHIEVEMENT), achievementProperties)
         verify {
-            mockTracker.customEvent("Achievement", mergedParams.toString())
+            mockTracker.customEvent(Commands.ACHIEVEMENT, mergedParams.toString())
         }
         confirmVerified(mockTracker)
     }
 
     @Test
     fun customEventAndParameters() {
-        val parameters = JSONObject()
-        parameters.put("key1", "value1")
-        parameters.put("key2", 2)
-        parameters.put("user_id", "100")
-        parameters.put("background", "false")
-        parameters.put("completed", "false")
+//        val parameters = JSONObject()
+//        parameters.put("key1", "value1")
+//        parameters.put("key2", 2)
+//        parameters.put("user_id", "100")
+//        parameters.put(Parameters.BACKGROUND, "false")
+//        parameters.put(Parameters.COMPLETED, "false")
+
+        val standardParams = JSONObject()
+        standardParams.put(Parameters.BACKGROUND, "false")
+        standardParams.put(Parameters.COMPLETED, "false")
+
+        val infoDictionary = JSONObject()
+        infoDictionary.put("key1", "value1")
+        infoDictionary.put("key2", 2)
+        standardParams.put("info_dictionary", infoDictionary)
+
+        val mergedParams = JSONObject()
+        mergedParams.put(Parameters.BACKGROUND, "false")
+        mergedParams.put(Parameters.COMPLETED, "false")
+        mergedParams.put("key1", "value1")
+        mergedParams.put("key2", 2)
+
+//        val mergedParams = kochavaRemoteCommand.mergeJSONObjects(infoDictionary, standardParams)
 
         every { mockTracker.customEvent(any(), any()) } just Runs
 
-        kochavaRemoteCommand.parseCommands(arrayOf("Any Event Name"), parameters)
+        kochavaRemoteCommand.parseCommands(arrayOf("Any Event Name"), standardParams)
         verify {
-            mockTracker.customEvent("Any Event Name", parameters.toString())
+            mockTracker.customEvent("Any Event Name", mergedParams.toString())
         }
         confirmVerified(mockTracker)
     }

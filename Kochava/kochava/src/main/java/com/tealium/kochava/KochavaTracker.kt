@@ -32,7 +32,7 @@ class KochavaTracker(application: Application, applicationId: String) : KochavaT
         )
     }
 
-    override fun adview(
+    override fun adView(
         type: String,
         networkName: String,
         placement: String,

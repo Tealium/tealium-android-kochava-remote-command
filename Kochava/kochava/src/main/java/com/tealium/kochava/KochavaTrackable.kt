@@ -3,10 +3,10 @@ package com.tealium.kochava
 interface KochavaTrackable {
 
     // standard events
-    // Gaming
+    // gaming
     fun tutorialLevelComplete(eventName: String, userId: String = "", name: String = "", duration: Double = 0.0)
     fun purchase(userId: String = "", name: String = "", contentId: String = "", price: Double = 0.0, currency: String = "", guestCheckout: String = "")
-    fun adview(type: String = "", networkName: String = "", placement: String = "", mediationName: String = "", campaignId: String = "", campaignName: String = "", size: String = "")
+    fun adView(type: String = "", networkName: String = "", placement: String = "", mediationName: String = "", campaignId: String = "", campaignName: String = "", size: String = "")
     fun rating(value: Double, maxRating: Double)
 
     // ecommerce
