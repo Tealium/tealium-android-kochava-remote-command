@@ -528,8 +528,8 @@ class KochavaRemoteCommandTest {
 //        parameters.put(Parameters.COMPLETED, "false")
 
         val standardParams = JSONObject()
-        standardParams.put(Parameters.BACKGROUND, "false")
-        standardParams.put(Parameters.COMPLETED, "false")
+        standardParams.put(Parameters.BACKGROUND, false)
+        standardParams.put(Parameters.COMPLETED, false)
 
         val infoDictionary = JSONObject()
         infoDictionary.put("key1", "value1")
@@ -537,8 +537,8 @@ class KochavaRemoteCommandTest {
         standardParams.put("info_dictionary", infoDictionary)
 
         val mergedParams = JSONObject()
-        mergedParams.put(Parameters.BACKGROUND, "false")
-        mergedParams.put(Parameters.COMPLETED, "false")
+        mergedParams.put(Parameters.BACKGROUND, false)
+        mergedParams.put(Parameters.COMPLETED, false)
         mergedParams.put("key1", "value1")
         mergedParams.put("key2", 2)
 
