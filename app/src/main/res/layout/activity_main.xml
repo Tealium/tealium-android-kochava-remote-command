@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.tealium.example.MainActivity">
+
+    <Button
+        android:id="@+id/purchaseBtn"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Purchase"
+        app:layout_constraintBottom_toTopOf="@+id/levelBtn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/tutorialBtn"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Tutorial Complete"
+        app:layout_constraintBottom_toTopOf="@+id/viewBtn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/levelBtn"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Level Complete"
+        app:layout_constraintBottom_toTopOf="@+id/ratingBtn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.503"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/adviewBtn"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Ad View"
+        app:layout_constraintBottom_toTopOf="@+id/purchaseBtn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.878" />
+
+    <Button
+        android:id="@+id/ratingBtn"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Rating"
+        app:layout_constraintBottom_toTopOf="@+id/achievementBtn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.501"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/cartBtn"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Add to Cart"
+        app:layout_constraintBottom_toTopOf="@id/customBtn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/customBtn"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Custom"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/wishlistBtn"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Add to Wishlist"
+        app:layout_constraintBottom_toTopOf="@+id/cartBtn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/checkoutBtn"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Checkout start"
+        app:layout_constraintBottom_toTopOf="@+id/wishlistBtn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/searchBtn"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Search"
+        app:layout_constraintBottom_toTopOf="@+id/checkoutBtn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/registerBtn"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Registration Complete"
+        app:layout_constraintBottom_toTopOf="@+id/searchBtn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/viewBtn"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="View"
+        app:layout_constraintBottom_toTopOf="@+id/registerBtn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/achievementBtn"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Achievement"
+        app:layout_constraintBottom_toTopOf="@+id/tutorialBtn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
