@@ -182,7 +182,7 @@ class KochavaRemoteCommand : RemoteCommand {
     }
 
     private fun deepLink(deepLink: JSONObject) {
-        val uri = deepLink.optString(Parameters.USER_ID)
+        val uri = deepLink.optString(Parameters.URI)
 
         val parameters: JSONObject? = deepLink.optJSONObject(Parameters.CUSTOM_PARAMETERS)
 

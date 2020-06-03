@@ -6,8 +6,8 @@ import android.app.Application
 import android.content.Context
 import com.tealium.kochava.KochavaRemoteCommand
 import com.tealium.kochava.KochavaTrackable
-import com.tealium.kochava.KochavaTracker
 import io.mockk.*
+import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.MockK
 import org.json.JSONObject
 import org.junit.Assert.assertEquals
@@ -20,12 +20,13 @@ import org.robolectric.RobolectricTestRunner
 class KochavaRemoteCommandTest {
 
     @MockK
-    lateinit var mockTracker: KochavaTracker
+    lateinit var mockTracker: KochavaTrackable
 
     @MockK
     lateinit var mockApp: Application
 
-    lateinit var kochavaRemoteCommand: KochavaRemoteCommand
+    @InjectMockKs
+    var kochavaRemoteCommand: KochavaRemoteCommand = KochavaRemoteCommand(null, "123")
 
     @MockK
     lateinit var mockapplicationContext: Context
@@ -34,8 +35,6 @@ class KochavaRemoteCommandTest {
     fun setUp() {
         MockKAnnotations.init(this)
         every { mockApp.applicationContext } returns mockapplicationContext
-        mockTracker = KochavaTracker(mockApp, "123")
-        kochavaRemoteCommand = KochavaRemoteCommand(mockApp, "123")
     }
 
     @Test
@@ -255,6 +254,9 @@ class KochavaRemoteCommandTest {
     fun addToCartCalledWithCustomParameters() {
         val cartProperties = JSONObject()
         cartProperties.put(Parameters.REFERRAL_FROM, "referral")
+        cartProperties.put(Parameters.USER_ID, "abc")
+        cartProperties.put(Parameters.NAME, "name")
+        cartProperties.put(Parameters.CONTENT_ID, "def")
 
         val infoDictionary = JSONObject()
         infoDictionary.put("key1", "value1")
@@ -263,6 +265,9 @@ class KochavaRemoteCommandTest {
 
         val mergedParams = JSONObject()
         mergedParams.put(Parameters.REFERRAL_FROM, "referral")
+        mergedParams.put(Parameters.USER_ID, "abc")
+        mergedParams.put(Parameters.NAME, "name")
+        mergedParams.put(Parameters.CONTENT_ID, "def")
         mergedParams.put("key1", "value1")
         mergedParams.put("key2", 2)
 
@@ -295,6 +300,9 @@ class KochavaRemoteCommandTest {
     fun addToWishlistCalledWithCustomParameters() {
         val wishlistProperties = JSONObject()
         wishlistProperties.put(Parameters.REFERRAL_FROM, "referral")
+        wishlistProperties.put(Parameters.USER_ID, "abc")
+        wishlistProperties.put(Parameters.NAME, "name")
+        wishlistProperties.put(Parameters.CONTENT_ID, "def")
 
         val infoDictionary = JSONObject()
         infoDictionary.put("key1", "value1")
@@ -303,6 +311,9 @@ class KochavaRemoteCommandTest {
 
         val mergedParams = JSONObject()
         mergedParams.put(Parameters.REFERRAL_FROM, "referral")
+        mergedParams.put(Parameters.USER_ID, "abc")
+        mergedParams.put(Parameters.NAME, "name")
+        mergedParams.put(Parameters.CONTENT_ID, "def")
         mergedParams.put("key1", "value1")
         mergedParams.put("key2", 2)
 
@@ -325,7 +336,7 @@ class KochavaRemoteCommandTest {
 
         kochavaRemoteCommand.parseCommands(arrayOf(Commands.CHECKOUT_START), checkoutProperties)
         verify {
-            mockTracker.checkoutStart("abc", "", "def", "", "")
+            mockTracker.checkoutStart("abc", "", "def")
         }
         confirmVerified(mockTracker)
     }
@@ -333,7 +344,11 @@ class KochavaRemoteCommandTest {
     @Test
     fun checkoutCalledWithCustomParameters() {
         val checkoutProperties = JSONObject()
+        checkoutProperties.put(Parameters.USER_ID, "abc")
         checkoutProperties.put(Parameters.CONTENT_ID, "abc")
+        checkoutProperties.put(Parameters.CHECKOUT_AS_GUEST, "yes")
+        checkoutProperties.put(Parameters.NAME, "name")
+        checkoutProperties.put(Parameters.CURRENCY, "usd")
 
         val infoDictionary = JSONObject()
         infoDictionary.put("key1", "value1")
@@ -341,7 +356,11 @@ class KochavaRemoteCommandTest {
         checkoutProperties.put("info_dictionary", infoDictionary)
 
         val mergedParams = JSONObject()
+        mergedParams.put(Parameters.USER_ID, "abc")
         mergedParams.put(Parameters.CONTENT_ID, "abc")
+        mergedParams.put(Parameters.CHECKOUT_AS_GUEST, "yes")
+        mergedParams.put(Parameters.NAME, "name")
+        mergedParams.put(Parameters.CURRENCY, "usd")
         mergedParams.put("key1", "value1")
         mergedParams.put("key2", 2)
 
@@ -371,6 +390,7 @@ class KochavaRemoteCommandTest {
     @Test
     fun searchCalledWithCustomParameters() {
         val searchProperties = JSONObject()
+        searchProperties.put(Parameters.URI, "abc")
         searchProperties.put(Parameters.RESULTS, "def")
 
         val infoDictionary = JSONObject()
@@ -379,6 +399,7 @@ class KochavaRemoteCommandTest {
         searchProperties.put("info_dictionary", infoDictionary)
 
         val mergedParams = JSONObject()
+        mergedParams.put(Parameters.URI, "abc")
         mergedParams.put(Parameters.RESULTS, "def")
         mergedParams.put("key1", "value1")
         mergedParams.put("key2", 2)
@@ -416,6 +437,8 @@ class KochavaRemoteCommandTest {
     fun registerCalledWithCustomParameters() {
         val registrationProperties = JSONObject()
         registrationProperties.put(Parameters.USER_ID, "abc")
+        registrationProperties.put(Parameters.USER_NAME, "def")
+        registrationProperties.put(Parameters.REFERRAL_FROM, "referral")
 
         val infoDictionary = JSONObject()
         infoDictionary.put("key1", "value1")
@@ -424,6 +447,8 @@ class KochavaRemoteCommandTest {
 
         val mergedParams = JSONObject()
         mergedParams.put(Parameters.USER_ID, "abc")
+        mergedParams.put(Parameters.USER_NAME, "def")
+        mergedParams.put(Parameters.REFERRAL_FROM, "referral")
         mergedParams.put("key1", "value1")
         mergedParams.put("key2", 2)
 
@@ -459,14 +484,20 @@ class KochavaRemoteCommandTest {
     fun viewCalledWithCustomParameters() {
         val viewProperties = JSONObject()
         viewProperties.put(Parameters.USER_ID, "abc")
+        viewProperties.put(Parameters.NAME, "name")
+        viewProperties.put(Parameters.CONTENT_ID, "def")
+        viewProperties.put(Parameters.REFERRAL_FROM, "ref")
 
         val infoDictionary = JSONObject()
         infoDictionary.put("key1", "value1")
         infoDictionary.put("key2", 2)
-        infoDictionary.put("info_dictionary", infoDictionary)
+        viewProperties.put("info_dictionary", infoDictionary)
 
         val mergedParams = JSONObject()
         mergedParams.put(Parameters.USER_ID, "abc")
+        mergedParams.put(Parameters.NAME, "name")
+        mergedParams.put(Parameters.CONTENT_ID, "def")
+        mergedParams.put(Parameters.REFERRAL_FROM, "ref")
         mergedParams.put("key1", "value1")
         mergedParams.put("key2", 2)
 
@@ -497,6 +528,7 @@ class KochavaRemoteCommandTest {
     fun achievementCalledWithCustomParameters() {
         val achievementProperties = JSONObject()
         achievementProperties.put(Parameters.USER_ID, "abc")
+        achievementProperties.put(Parameters.NAME, "name")
 
         val infoDictionary = JSONObject()
         infoDictionary.put("key1", "value1")
@@ -505,6 +537,7 @@ class KochavaRemoteCommandTest {
 
         val mergedParams = JSONObject()
         mergedParams.put(Parameters.USER_ID, "abc")
+        mergedParams.put(Parameters.NAME, "name")
         mergedParams.put("key1", "value1")
         mergedParams.put("key2", 2)
 
@@ -562,7 +595,7 @@ class KochavaRemoteCommandTest {
         subscribeProperties.put(Parameters.NAME, "name")
         subscribeProperties.put(Parameters.CURRENCY, "USD")
 
-        every { mockTracker.achievement(any(), any(), any()) } just Runs
+        every { mockTracker.subscribe(any(), any(), any(), any()) } just Runs
         kochavaRemoteCommand.parseCommands(arrayOf(Commands.SUBSCRIBE), subscribeProperties)
         verify {
             mockTracker.subscribe(Double.NaN, "USD", "name", "abc")
@@ -575,6 +608,8 @@ class KochavaRemoteCommandTest {
         val subscribeProperties = JSONObject()
         subscribeProperties.put(Parameters.PRICE, 9.0)
         subscribeProperties.put(Parameters.NAME, "name")
+        subscribeProperties.put(Parameters.USER_ID, "abc")
+        subscribeProperties.put(Parameters.CURRENCY, "USD")
 
         val infoDictionary = JSONObject()
         infoDictionary.put("key1", "value1")
@@ -584,6 +619,8 @@ class KochavaRemoteCommandTest {
         val mergedParams = JSONObject()
         mergedParams.put(Parameters.PRICE, 9.0)
         mergedParams.put(Parameters.NAME, "name")
+        mergedParams.put(Parameters.USER_ID, "abc")
+        mergedParams.put(Parameters.CURRENCY, "USD")
         mergedParams.put("key1", "value1")
         mergedParams.put("key2", 2)
 
@@ -603,7 +640,7 @@ class KochavaRemoteCommandTest {
         trialProperties.put(Parameters.NAME, "name")
         trialProperties.put(Parameters.CURRENCY, "USD")
 
-        every { mockTracker.achievement(any(), any(), any()) } just Runs
+        every { mockTracker.startTrial(any(), any(), any(), any()) } just Runs
         kochavaRemoteCommand.parseCommands(arrayOf(Commands.START_TRIAL), trialProperties)
         verify {
             mockTracker.startTrial(Double.NaN, "USD", "name", "abc")
@@ -616,6 +653,8 @@ class KochavaRemoteCommandTest {
         val trialProperties = JSONObject()
         trialProperties.put(Parameters.PRICE, 9.0)
         trialProperties.put(Parameters.NAME, "name")
+        trialProperties.put(Parameters.USER_ID, "abc")
+        trialProperties.put(Parameters.CURRENCY, "USD")
 
         val infoDictionary = JSONObject()
         infoDictionary.put("key1", "value1")
@@ -625,6 +664,8 @@ class KochavaRemoteCommandTest {
         val mergedParams = JSONObject()
         mergedParams.put(Parameters.PRICE, 9.0)
         mergedParams.put(Parameters.NAME, "name")
+        mergedParams.put(Parameters.USER_ID, "abc")
+        mergedParams.put(Parameters.CURRENCY, "USD")
         mergedParams.put("key1", "value1")
         mergedParams.put("key2", 2)
 
