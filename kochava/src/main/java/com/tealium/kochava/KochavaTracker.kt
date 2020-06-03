@@ -2,6 +2,7 @@ package com.tealium.kochava
 
 import android.app.Application
 import com.kochava.base.Tracker
+import org.json.JSONObject
 
 class KochavaTracker(application: Application, applicationId: String) : KochavaTrackable {
 
@@ -11,44 +12,37 @@ class KochavaTracker(application: Application, applicationId: String) : KochavaT
         )
     }
 
-    override fun tutorialLevelComplete(eventName: String, userId: String, name: String, duration: Double) {
-        if (duration.isNaN()) {
-            Tracker.sendEvent(
-                Tracker.Event(eventName)
-                    .setUserId(userId)
-                    .setName(name)
-            )
-        } else {
-            Tracker.sendEvent(
-                Tracker.Event(eventName)
-                    .setUserId(userId)
-                    .setName(name)
-                    .setDuration(duration)
-            )
-        }
+    override fun configure(application: Application, configurationParams: JSONObject) {
+        Tracker.configure(Tracker.Configuration(application.applicationContext)
+            .addCustom(configurationParams)
+        )
+    }
+
+    override fun tutorialComplete(userId: String, name: String, duration: Double) {
+        val event = Tracker.Event(Tracker.EVENT_TYPE_TUTORIAL_COMPLETE)
+            .setUserId(userId)
+            .setName(name)
+        if (!duration.isNaN()) event.setDuration(duration)
+        Tracker.sendEvent(event)
+    }
+
+    override fun levelComplete(userId: String, name: String, duration: Double) {
+        val event = Tracker.Event(Tracker.EVENT_TYPE_LEVEL_COMPLETE)
+            .setUserId(userId)
+            .setName(name)
+        if (!duration.isNaN()) event.setDuration(duration)
+        Tracker.sendEvent(event)
     }
 
     override fun purchase (userId: String, name: String, contentId: String, price: Double, currency: String, guestCheckout: String) {
-        if (price.isNaN()) {
-            Tracker.sendEvent(
-                Tracker.Event(Tracker.EVENT_TYPE_PURCHASE)
-                    .setUserId(userId)
-                    .setName(name)
-                    .setContentId(contentId)
-                    .setCurrency(currency)
-                    .setCheckoutAsGuest(guestCheckout)
-            )
-        } else {
-            Tracker.sendEvent(
-                Tracker.Event(Tracker.EVENT_TYPE_PURCHASE)
-                    .setUserId(userId)
-                    .setName(name)
-                    .setContentId(contentId)
-                    .setPrice(price)
-                    .setCurrency(currency)
-                    .setCheckoutAsGuest(guestCheckout)
-            )
-        }
+        val event = Tracker.Event(Tracker.EVENT_TYPE_PURCHASE)
+            .setUserId(userId)
+            .setName(name)
+            .setContentId(contentId)
+            .setCurrency(currency)
+            .setCheckoutAsGuest(guestCheckout)
+        if (!price.isNaN()) event.setDuration(price)
+        Tracker.sendEvent(event)
     }
 
     override fun adView(
@@ -87,24 +81,13 @@ class KochavaTracker(application: Application, applicationId: String) : KochavaT
         quantity: Double,
         referralForm: String
     ) {
-        if (quantity.isNaN()) {
-            Tracker.sendEvent(
-                Tracker.Event(Tracker.EVENT_TYPE_ADD_TO_CART)
-                    .setUserId(userId)
-                    .setName(name)
-                    .setContentId(contentId)
-                    .setReferralFrom(referralForm)
-            )
-        } else {
-            Tracker.sendEvent(
-                Tracker.Event(Tracker.EVENT_TYPE_ADD_TO_CART)
-                    .setUserId(userId)
-                    .setName(name)
-                    .setContentId(contentId)
-                    .setQuantity(quantity)
-                    .setReferralFrom(referralForm)
-            )
-        }
+        val event = Tracker.Event(Tracker.EVENT_TYPE_ADD_TO_CART)
+            .setUserId(userId)
+            .setName(name)
+            .setContentId(contentId)
+            .setReferralFrom(referralForm)
+        if (!quantity.isNaN()) event.setQuantity(quantity)
+        Tracker.sendEvent(event)
     }
 
     override fun addToWishList(
@@ -167,20 +150,33 @@ class KochavaTracker(application: Application, applicationId: String) : KochavaT
     }
 
     override fun achievement(userId: String, name: String, duration: Double) {
-        if (duration.isNaN()) {
-            Tracker.sendEvent(
-                Tracker.Event(Tracker.EVENT_TYPE_ACHIEVEMENT)
-                .setUserId(userId)
-                .setName(name)
-            )
-        } else {
-            Tracker.sendEvent(
-                Tracker.Event(Tracker.EVENT_TYPE_ACHIEVEMENT)
-                    .setUserId(userId)
-                    .setName(name)
-                    .setDuration(duration)
-            )
-        }
+        val event = Tracker.Event(Tracker.EVENT_TYPE_ACHIEVEMENT)
+            .setUserId(userId)
+            .setName(name)
+        if (!duration.isNaN()) event.setDuration(duration)
+        Tracker.sendEvent(event)
+    }
+
+    override fun deepLink(URI: String) {
+        Tracker.sendEvent(Tracker.Event(Tracker.EVENT_TYPE_DEEP_LINK).setUri(URI))
+    }
+
+    override fun subscribe(price: Double, currency: String, productName: String, userId: String) {
+        val event = Tracker.Event(Tracker.EVENT_TYPE_SUBSCRIBE)
+            .setCurrency(currency)
+            .setName(productName)
+            .setUserId(userId)
+        if (!price.isNaN()) event.setPrice(price)
+        Tracker.sendEvent(event)
+    }
+
+    override fun startTrial(price: Double, currency: String, productName: String, userId: String) {
+        val event = Tracker.Event(Tracker.EVENT_TYPE_START_TRIAL)
+            .setCurrency(currency)
+            .setName(productName)
+            .setUserId(userId)
+        if (!price.isNaN()) event.setPrice(price)
+        Tracker.sendEvent(event)
     }
 
     override fun customEvent(eventName: String, parameters: String) {

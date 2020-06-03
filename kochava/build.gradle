@@ -36,6 +36,5 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
     testImplementation "io.mockk:mockk:$mockk_version"
-    implementation "com.tealium:library:$tealium_version"
     implementation 'com.kochava.base:tracker:3.7.1'
 }

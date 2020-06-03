@@ -4,6 +4,7 @@ object Commands {
     const val COMMAND_KEY = "command_name"
     const val SEPARATOR = ","
 
+    const val CONFIGURE = "configure"
     const val PURCHASE = "purchase"
     const val TUTORIAL_COMPLETE = "tutorialcomplete"
     const val LEVEL_COMPLETE = "levelcomplete"
@@ -16,6 +17,9 @@ object Commands {
     const val REGISTRATION_COMPLETE = "registrationcomplete"
     const val VIEW = "view"
     const val ACHIEVEMENT = "achievement"
+    const val DEEP_LINK = "deeplink"
+    const val SUBSCRIBE = "subscribe"
+    const val START_TRIAL = "starttrial"
 }
 
 object Parameters {
@@ -67,4 +71,5 @@ object Parameters {
     const val LEVEL = "level"
     const val ITEM_ADDED_FROM = "item_added_from"
     const val CUSTOM_PARAMETERS = "info_dictionary"
+    const val CONFIGURATION_PARAMS = "configuration_params"
 }

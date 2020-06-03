@@ -1,22 +1,33 @@
 package com.tealium.kochava
 
+import Commands
+import Parameters
 import android.app.Application
 import com.tealium.internal.tagbridge.RemoteCommand
 import org.json.JSONObject
 
+class KochavaRemoteCommand : RemoteCommand {
 
-open class KochavaRemoteCommand @JvmOverloads constructor(
-    application: Application,
-    appGuid: String,
-    commandId: String = DEFAULT_COMMAND_ID,
-    description: String = DEFAULT_COMMAND_DESCRIPTION,
-    var tracker: KochavaTrackable = KochavaTracker(
-        application,
-        appGuid
-    )
-) : RemoteCommand(commandId, description) {
+    lateinit var tracker: KochavaTrackable
+    var application: Application? = null
 
-    private val TAG = this::class.java.simpleName
+    /**
+     * Constructs a RemoteCommand that integrates with the Facebook App Events SDK to allow Facebook API calls to be implemented through Tealium.
+     */
+    @JvmOverloads
+    constructor(
+        application: Application? = null,
+        appGuid: String,
+        commandId: String = DEFAULT_COMMAND_ID,
+        description: String = DEFAULT_COMMAND_DESCRIPTION
+    ) : super(commandId, description) {
+        application?.let {
+            tracker = KochavaTracker(
+                application,
+                appGuid
+            )
+        }
+    }
 
     /**
      * Handles the incoming RemoteCommand response data. Prepares the command and payload for parsing.
@@ -28,11 +39,6 @@ open class KochavaRemoteCommand @JvmOverloads constructor(
         val payload = response.requestPayload
         val commands = splitCommands(payload)
         parseCommands(commands, payload)
-    }
-
-    companion object {
-        val DEFAULT_COMMAND_ID = "kochava"
-        val DEFAULT_COMMAND_DESCRIPTION = "Tealium-Kochava Remote Command"
     }
 
     fun splitCommands(payload: JSONObject): Array<String> {
@@ -56,6 +62,9 @@ open class KochavaRemoteCommand @JvmOverloads constructor(
         commands.forEach { command ->
 
             when (command) {
+                Commands.CONFIGURE -> {
+                    initialize(payload)
+                }
                 Commands.PURCHASE -> {
                     purchase(payload)
                 }
@@ -92,6 +101,15 @@ open class KochavaRemoteCommand @JvmOverloads constructor(
                 Commands.ACHIEVEMENT -> {
                     achieve(payload)
                 }
+                Commands.DEEP_LINK -> {
+                    deepLink(payload)
+                }
+                Commands.SUBSCRIBE -> {
+                    subscribe(payload)
+                }
+                Commands.START_TRIAL -> {
+                    startTrial(payload)
+                }
                 else -> {
                     logCustomEvent(command, payload)
                 }
@@ -99,18 +117,86 @@ open class KochavaRemoteCommand @JvmOverloads constructor(
         }
     }
 
-    fun logCustomEvent(eventName: String, payload: JSONObject) {
+    private fun initialize(payload: JSONObject) {
+        val configurationParams = payload.optJSONObject(Parameters.CONFIGURATION_PARAMS)
+        application?.let {
+            tracker.configure(it, configurationParams)
+        }
+    }
+
+    private fun logCustomEvent(eventName: String, payload: JSONObject) {
         val standardParams = createStandardParams(payload)
         val parameters: JSONObject? = payload.optJSONObject(Parameters.CUSTOM_PARAMETERS)
         parameters?.let {
             val mergedParams = mergeJSONObjects(parameters, standardParams)
             tracker.customEvent(eventName, mergedParams.toString())
-        } ?:run {
+        } ?: run {
             tracker.customEvent(eventName, standardParams.toString())
         }
     }
 
-    fun achieve(achievement: JSONObject) {
+    private fun subscribe(subscribe: JSONObject) {
+        val price = subscribe.optDouble(Parameters.PRICE)
+        val currency = subscribe.optString(Parameters.CURRENCY)
+        val name = subscribe.optString(Parameters.NAME)
+        val userId = subscribe.optString(Parameters.USER_ID)
+
+        val parameters: JSONObject? = subscribe.optJSONObject(Parameters.CUSTOM_PARAMETERS)
+
+        parameters?.let {
+            // combine custom and standard params
+            it.put(Parameters.CURRENCY, currency)
+            it.put(Parameters.USER_ID, userId)
+            it.put(Parameters.NAME, name)
+            if (!price.isNaN()) {
+                it.put(Parameters.PRICE, price)
+            }
+
+            tracker.customEvent(Commands.SUBSCRIBE, it.toString())
+        } ?: run {
+            tracker.subscribe(price, currency, name, userId)
+        }
+    }
+
+    private fun startTrial(trial: JSONObject) {
+        val price = trial.optDouble(Parameters.PRICE)
+        val currency = trial.optString(Parameters.CURRENCY)
+        val name = trial.optString(Parameters.NAME)
+        val userId = trial.optString(Parameters.USER_ID)
+
+        val parameters: JSONObject? = trial.optJSONObject(Parameters.CUSTOM_PARAMETERS)
+
+        parameters?.let {
+            // combine custom and standard params
+            it.put(Parameters.CURRENCY, currency)
+            it.put(Parameters.USER_ID, userId)
+            it.put(Parameters.NAME, name)
+            if (!price.isNaN()) {
+                it.put(Parameters.PRICE, price)
+            }
+
+            tracker.customEvent(Commands.START_TRIAL, it.toString())
+        } ?: run {
+            tracker.startTrial(price, currency, name, userId)
+        }
+    }
+
+    private fun deepLink(deepLink: JSONObject) {
+        val uri = deepLink.optString(Parameters.USER_ID)
+
+        val parameters: JSONObject? = deepLink.optJSONObject(Parameters.CUSTOM_PARAMETERS)
+
+        parameters?.let {
+            // combine custom and standard params
+            it.put(Parameters.URI, uri)
+
+            tracker.customEvent(Commands.DEEP_LINK, it.toString())
+        } ?: run {
+            tracker.deepLink(uri)
+        }
+    }
+
+    private fun achieve(achievement: JSONObject) {
         val userId = achievement.optString(Parameters.USER_ID)
         val name = achievement.optString(Parameters.NAME)
         val duration = achievement.optDouble(Parameters.DURATION)
@@ -119,21 +205,19 @@ open class KochavaRemoteCommand @JvmOverloads constructor(
 
         parameters?.let {
             // combine custom and standard params
-            val standardParams = JSONObject()
-            standardParams.put(Parameters.USER_ID, userId)
-            standardParams.put(Parameters.NAME, name)
+            it.put(Parameters.USER_ID, userId)
+            it.put(Parameters.NAME, name)
             if (!duration.isNaN()) {
-                standardParams.put(Parameters.DURATION, duration)
+                it.put(Parameters.DURATION, duration)
             }
 
-            val mergedParams = mergeJSONObjects(standardParams, parameters)
-            tracker.customEvent(Commands.ACHIEVEMENT, mergedParams.toString())
+            tracker.customEvent(Commands.ACHIEVEMENT, it.toString())
         } ?: run {
             tracker.achievement(userId, name, duration)
         }
     }
 
-    fun view(view: JSONObject) {
+    private fun view(view: JSONObject) {
         val userId = view.optString(Parameters.USER_ID)
         val name = view.optString(Parameters.NAME)
         val contentId = view.optString(Parameters.CONTENT_ID)
@@ -143,20 +227,18 @@ open class KochavaRemoteCommand @JvmOverloads constructor(
 
         parameters?.let {
             // combine custom and standard params
-            val standardParams = JSONObject()
-            standardParams.put(Parameters.USER_ID, userId)
-            standardParams.put(Parameters.NAME, name)
-            standardParams.put(Parameters.CONTENT_ID, contentId)
-            standardParams.put(Parameters.REFERRAL_FROM, referralFrom)
+            it.put(Parameters.USER_ID, userId)
+            it.put(Parameters.NAME, name)
+            it.put(Parameters.CONTENT_ID, contentId)
+            it.put(Parameters.REFERRAL_FROM, referralFrom)
 
-            val mergedParams = mergeJSONObjects(standardParams, parameters)
-            tracker.customEvent(Commands.VIEW, mergedParams.toString())
+            tracker.customEvent(Commands.VIEW, it.toString())
         } ?: run {
             tracker.view(userId, name, contentId, referralFrom)
         }
     }
 
-    fun register(registration: JSONObject) {
+    private fun register(registration: JSONObject) {
         val userId = registration.optString(Parameters.USER_ID)
         val userName = registration.optString(Parameters.USER_NAME)
         val referralFrom = registration.optString(Parameters.REFERRAL_FROM)
@@ -165,19 +247,17 @@ open class KochavaRemoteCommand @JvmOverloads constructor(
 
         parameters?.let {
             // combine custom and standard params
-            val standardParams = JSONObject()
-            standardParams.put(Parameters.USER_ID, userId)
-            standardParams.put(Parameters.USER_NAME, userName)
-            standardParams.put(Parameters.REFERRAL_FROM, referralFrom)
+            it.put(Parameters.USER_ID, userId)
+            it.put(Parameters.USER_NAME, userName)
+            it.put(Parameters.REFERRAL_FROM, referralFrom)
 
-            val mergedParams = mergeJSONObjects(standardParams, parameters)
-            tracker.customEvent(Commands.REGISTRATION_COMPLETE, mergedParams.toString())
+            tracker.customEvent(Commands.REGISTRATION_COMPLETE, it.toString())
         } ?: run {
             tracker.registrationComplete(userId, userName, referralFrom)
         }
     }
 
-    fun search(search: JSONObject) {
+    private fun search(search: JSONObject) {
         val uri = search.optString(Parameters.URI)
         val results = search.optString(Parameters.RESULTS)
 
@@ -185,18 +265,16 @@ open class KochavaRemoteCommand @JvmOverloads constructor(
 
         parameters?.let {
             // combine custom and standard params
-            val standardParams = JSONObject()
-            standardParams.put(Parameters.URI, uri)
-            standardParams.put(Parameters.RESULTS, results)
+            it.put(Parameters.URI, uri)
+            it.put(Parameters.RESULTS, results)
 
-            val mergedParams = mergeJSONObjects(standardParams, parameters)
-            tracker.customEvent(Commands.SEARCH, mergedParams.toString())
+            tracker.customEvent(Commands.SEARCH, it.toString())
         } ?: run {
             tracker.search(uri, results)
         }
     }
 
-    fun checkoutStart(checkoutStart: JSONObject) {
+    private fun checkoutStart(checkoutStart: JSONObject) {
         val userId = checkoutStart.optString(Parameters.USER_ID)
         val name = checkoutStart.optString(Parameters.NAME)
         val contentId = checkoutStart.optString(Parameters.CONTENT_ID)
@@ -207,21 +285,19 @@ open class KochavaRemoteCommand @JvmOverloads constructor(
 
         parameters?.let {
             // combine custom and standard params
-            val standardParams = JSONObject()
-            standardParams.put(Parameters.USER_ID, userId)
-            standardParams.put(Parameters.NAME, name)
-            standardParams.put(Parameters.CONTENT_ID, contentId)
-            standardParams.put(Parameters.CHECKOUT_AS_GUEST, guestCheckout)
-            standardParams.put(Parameters.CURRENCY, currency)
+            it.put(Parameters.USER_ID, userId)
+            it.put(Parameters.NAME, name)
+            it.put(Parameters.CONTENT_ID, contentId)
+            it.put(Parameters.CHECKOUT_AS_GUEST, guestCheckout)
+            it.put(Parameters.CURRENCY, currency)
 
-            val mergedParams = mergeJSONObjects(standardParams, parameters)
-            tracker.customEvent(Commands.CHECKOUT_START, mergedParams.toString())
+            tracker.customEvent(Commands.CHECKOUT_START, it.toString())
         } ?: run {
             tracker.checkoutStart(userId, name, contentId, guestCheckout, currency)
         }
     }
 
-    fun addToWishList(wishlist: JSONObject) {
+    private fun addToWishList(wishlist: JSONObject) {
         val userId = wishlist.optString(Parameters.USER_ID)
         val name = wishlist.optString(Parameters.NAME)
         val contentId = wishlist.optString(Parameters.CONTENT_ID)
@@ -231,20 +307,18 @@ open class KochavaRemoteCommand @JvmOverloads constructor(
 
         parameters?.let {
             // combine custom and standard params
-            val standardParams = JSONObject()
-            standardParams.put(Parameters.USER_ID, userId)
-            standardParams.put(Parameters.NAME, name)
-            standardParams.put(Parameters.CONTENT_ID, contentId)
-            standardParams.put(Parameters.REFERRAL_FROM, referralFrom)
+            it.put(Parameters.USER_ID, userId)
+            it.put(Parameters.NAME, name)
+            it.put(Parameters.CONTENT_ID, contentId)
+            it.put(Parameters.REFERRAL_FROM, referralFrom)
 
-            val mergedParams = mergeJSONObjects(standardParams, parameters)
-            tracker.customEvent(Commands.ADD_TO_WISH_LIST, mergedParams.toString())
+            tracker.customEvent(Commands.ADD_TO_WISH_LIST, it.toString())
         } ?: run {
             tracker.addToWishList(userId, name, contentId, referralFrom)
         }
     }
 
-    fun addToCart(cart: JSONObject) {
+    private fun addToCart(cart: JSONObject) {
         val userId = cart.optString(Parameters.USER_ID)
         val name = cart.optString(Parameters.NAME)
         val contentId = cart.optString(Parameters.CONTENT_ID)
@@ -255,23 +329,21 @@ open class KochavaRemoteCommand @JvmOverloads constructor(
 
         parameters?.let {
             // combine custom and standard params
-            val standardParams = JSONObject()
-            standardParams.put(Parameters.USER_ID, userId)
-            standardParams.put(Parameters.NAME, name)
-            standardParams.put(Parameters.CONTENT_ID, contentId)
+            it.put(Parameters.USER_ID, userId)
+            it.put(Parameters.NAME, name)
+            it.put(Parameters.CONTENT_ID, contentId)
             if (!quantity.isNaN()) {
-                standardParams.put(Parameters.QUANTITY, quantity)
+                it.put(Parameters.QUANTITY, quantity)
             }
-            standardParams.put(Parameters.REFERRAL_FROM, referralFrom)
+            it.put(Parameters.REFERRAL_FROM, referralFrom)
 
-            val mergedParams = mergeJSONObjects(standardParams, parameters)
-            tracker.customEvent(Commands.ADD_TO_CART, mergedParams.toString())
+            tracker.customEvent(Commands.ADD_TO_CART, it.toString())
         } ?: run {
             tracker.addToCart(userId, name, contentId, quantity, referralFrom)
         }
     }
 
-    fun rating(rating: JSONObject) {
+    private fun rating(rating: JSONObject) {
         val value = rating.optDouble(Parameters.RATING_VALUE)
         val maxRating = rating.optDouble(Parameters.MAX_RATING_VALUE)
 
@@ -279,22 +351,20 @@ open class KochavaRemoteCommand @JvmOverloads constructor(
 
         parameters?.let {
             // combine custom and standard params
-            val standardParams = JSONObject()
             if (!value.isNaN()) {
-                standardParams.put(Parameters.RATING_VALUE, value)
+                it.put(Parameters.RATING_VALUE, value)
             }
             if (!maxRating.isNaN()) {
-                standardParams.put(Parameters.MAX_RATING_VALUE, maxRating)
+                it.put(Parameters.MAX_RATING_VALUE, maxRating)
             }
 
-            val mergedParams = mergeJSONObjects(standardParams, parameters)
-            tracker.customEvent(Commands.RATING, mergedParams.toString())
+            tracker.customEvent(Commands.RATING, it.toString())
         } ?: run {
             tracker.rating(value, maxRating)
         }
     }
 
-    fun adView(adview: JSONObject) {
+    private fun adView(adview: JSONObject) {
         val type = adview.optString(Parameters.AD_TYPE)
         val networkName = adview.optString(Parameters.AD_NETWORK_NAME)
         val placement = adview.optString(Parameters.PLACEMENT)
@@ -307,16 +377,14 @@ open class KochavaRemoteCommand @JvmOverloads constructor(
 
         parameters?.let {
             // combine custom and standard params
-            val standardParams = JSONObject()
-            standardParams.put(Parameters.USER_ID, type)
-            standardParams.put(Parameters.NAME, networkName)
-            standardParams.put(Parameters.DURATION, placement)
-            standardParams.put(Parameters.USER_ID, mediationName)
-            standardParams.put(Parameters.NAME, campaignId)
-            standardParams.put(Parameters.DURATION, campaignName)
+            it.put(Parameters.USER_ID, type)
+            it.put(Parameters.NAME, networkName)
+            it.put(Parameters.DURATION, placement)
+            it.put(Parameters.USER_ID, mediationName)
+            it.put(Parameters.NAME, campaignId)
+            it.put(Parameters.DURATION, campaignName)
 
-            val mergedParams = mergeJSONObjects(standardParams, parameters)
-            tracker.customEvent(Commands.AD_VIEW, mergedParams.toString())
+            tracker.customEvent(Commands.AD_VIEW, it.toString())
         } ?: run {
             tracker.adView(
                 type,
@@ -330,7 +398,7 @@ open class KochavaRemoteCommand @JvmOverloads constructor(
         }
     }
 
-    fun tutorialComplete(tutorial: JSONObject) {
+    private fun tutorialComplete(tutorial: JSONObject) {
         val userId = tutorial.optString(Parameters.USER_ID)
         val name = tutorial.optString(Parameters.NAME)
         val duration = tutorial.optDouble(Parameters.DURATION) as Double
@@ -339,22 +407,19 @@ open class KochavaRemoteCommand @JvmOverloads constructor(
 
         parameters?.let {
             // combine custom and standard params
-            val standardParams = JSONObject()
-            standardParams.put(Parameters.USER_ID, userId)
-            standardParams.put(Parameters.NAME, name)
+            it.put(Parameters.USER_ID, userId)
+            it.put(Parameters.NAME, name)
             if (!duration.isNaN()) {
-                standardParams.put(Parameters.DURATION, duration)
+                it.put(Parameters.DURATION, duration)
             }
 
-            val mergedParams = mergeJSONObjects(standardParams, parameters)
-
-            tracker.customEvent(Commands.TUTORIAL_COMPLETE, mergedParams.toString())
+            tracker.customEvent(Commands.TUTORIAL_COMPLETE, it.toString())
         } ?: run {
-            tracker.tutorialLevelComplete(Commands.TUTORIAL_COMPLETE, userId, name, duration)
+            tracker.tutorialComplete(userId, name, duration)
         }
     }
 
-    fun levelComplete(level: JSONObject) {
+    private fun levelComplete(level: JSONObject) {
         val userId = level.optString(Parameters.USER_ID)
         val name = level.optString(Parameters.NAME)
         val duration = level.optDouble(Parameters.DURATION) as Double
@@ -363,21 +428,19 @@ open class KochavaRemoteCommand @JvmOverloads constructor(
 
         parameters?.let {
             // combine custom and standard params
-            val standardParams = JSONObject()
-            standardParams.put(Parameters.USER_ID, userId)
-            standardParams.put(Parameters.NAME, name)
+            it.put(Parameters.USER_ID, userId)
+            it.put(Parameters.NAME, name)
             if (!duration.isNaN()) {
-                standardParams.put(Parameters.DURATION, duration)
+                it.put(Parameters.DURATION, duration)
             }
-            val mergedParams = mergeJSONObjects(standardParams, parameters)
 
-            tracker.customEvent(Commands.LEVEL_COMPLETE, mergedParams.toString())
+            tracker.customEvent(Commands.LEVEL_COMPLETE, it.toString())
         } ?: run {
-            tracker.tutorialLevelComplete(Commands.LEVEL_COMPLETE, userId, name, duration)
+            tracker.levelComplete(userId, name, duration)
         }
     }
 
-    fun purchase(purchase: JSONObject) {
+    private fun purchase(purchase: JSONObject) {
         val userId = purchase.optString(Parameters.USER_ID)
         val name = purchase.optString(Parameters.NAME)
         val contentId = purchase.optString(Parameters.CONTENT_ID)
@@ -388,25 +451,23 @@ open class KochavaRemoteCommand @JvmOverloads constructor(
 
         parameters?.let {
             // combine custom and standard params
-            val standardParams = JSONObject()
-            standardParams.put(Parameters.USER_ID, userId)
-            standardParams.put(Parameters.NAME, name)
-            standardParams.put(Parameters.CONTENT_ID, contentId)
+            it.put(Parameters.USER_ID, userId)
+            it.put(Parameters.NAME, name)
+            it.put(Parameters.CONTENT_ID, contentId)
             if (!price.isNaN()) {
-                standardParams.put(Parameters.PRICE, price)
+                it.put(Parameters.PRICE, price)
             }
-            standardParams.put(Parameters.CURRENCY, currency)
-            standardParams.put(Parameters.CHECKOUT_AS_GUEST, guestCheckout)
-            val mergedParams = mergeJSONObjects(standardParams, parameters)
+            it.put(Parameters.CURRENCY, currency)
+            it.put(Parameters.CHECKOUT_AS_GUEST, guestCheckout)
 
-            tracker.customEvent(Commands.PURCHASE, mergedParams.toString())
+            tracker.customEvent(Commands.PURCHASE, it.toString())
         } ?: run {
             tracker.purchase(userId, name, contentId, price, currency, guestCheckout)
         }
 
     }
 
-    fun mergeJSONObjects(json1: JSONObject, json2: JSONObject): JSONObject {
+    private fun mergeJSONObjects(json1: JSONObject, json2: JSONObject): JSONObject {
         val iter1 = json1.keys()
         val iter2 = json2.keys()
         val merged = JSONObject()
@@ -426,7 +487,7 @@ open class KochavaRemoteCommand @JvmOverloads constructor(
         return merged
     }
 
-    fun createStandardParams(payload: JSONObject): JSONObject {
+    private fun createStandardParams(payload: JSONObject): JSONObject {
         val standardParams = JSONObject()
 
         val deviceType = payload.optString(Parameters.DEVICE_TYPE)
@@ -620,6 +681,11 @@ open class KochavaRemoteCommand @JvmOverloads constructor(
         }
 
         return standardParams
+    }
+
+    companion object {
+        val DEFAULT_COMMAND_ID = "kochava"
+        val DEFAULT_COMMAND_DESCRIPTION = "Tealium-Kochava Remote Command"
     }
 
 }

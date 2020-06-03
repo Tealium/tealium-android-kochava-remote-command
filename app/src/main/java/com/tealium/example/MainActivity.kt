@@ -1,72 +1,39 @@
 package com.tealium.example
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.Button
+import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
-import org.json.JSONObject
 
 class MainActivity : AppCompatActivity() {
-
-    private lateinit var purchaseBtn: Button
-    private lateinit var tutorialBtn: Button
-    private lateinit var levelBtn: Button
-    private lateinit var adviewBtn: Button
-    private lateinit var ratingBtn: Button
-    private lateinit var cartBtn: Button
-    private lateinit var wishlistBtn: Button
-    private lateinit var checkoutBtn: Button
-    private lateinit var searchBtn: Button
-    private lateinit var registerBtn: Button
-    private lateinit var viewBtn: Button
-    private lateinit var achievementBtn: Button
-    private lateinit var customBtn: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        var hashMap : HashMap<String, String> = HashMap<String, String>()
+        purchaseBtn.setOnClickListener { TealiumHelper.trackEvent("purchase", emptyMap()) }
 
-        hashMap.put("name", "roya")
+        tutorialBtn.setOnClickListener { TealiumHelper.trackEvent("complete_tutorial", emptyMap()) }
 
-        purchaseBtn = findViewById<Button>(R.id.purchaseBtn)
-        purchaseBtn.setOnClickListener{ TealiumHelper.trackEvent("purchase", hashMap)}
+        levelBtn.setOnClickListener { TealiumHelper.trackEvent("levelcomplete", emptyMap()) }
 
-        tutorialBtn = findViewById<Button>(R.id.tutorialBtn)
-        tutorialBtn.setOnClickListener{ TealiumHelper.trackEvent("complete_tutorial", hashMap)}
+        adviewBtn.setOnClickListener { TealiumHelper.trackEvent("adview", emptyMap()) }
 
-        levelBtn = findViewById<Button>(R.id.levelBtn)
-        levelBtn.setOnClickListener{ TealiumHelper.trackEvent("levelcomplete", hashMap)}
+        ratingBtn.setOnClickListener { TealiumHelper.trackEvent("rating", emptyMap()) }
 
-        adviewBtn = findViewById<Button>(R.id.adviewBtn)
-        adviewBtn.setOnClickListener{ TealiumHelper.trackEvent("adview", hashMap)}
+        cartBtn.setOnClickListener { TealiumHelper.trackEvent("add_cart", emptyMap()) }
 
-        ratingBtn = findViewById<Button>(R.id.ratingBtn)
-        ratingBtn.setOnClickListener{ TealiumHelper.trackEvent("rating", hashMap)}
+        wishlistBtn.setOnClickListener { TealiumHelper.trackEvent("add_wishlist", emptyMap()) }
 
-        cartBtn = findViewById<Button>(R.id.cartBtn)
-        cartBtn.setOnClickListener{ TealiumHelper.trackEvent("add_cart", hashMap)}
+        checkoutBtn.setOnClickListener { TealiumHelper.trackEvent("checkout", emptyMap()) }
 
-        wishlistBtn = findViewById<Button>(R.id.wishlistBtn)
-        wishlistBtn.setOnClickListener{ TealiumHelper.trackEvent("add_wishlist", hashMap)}
+        searchBtn.setOnClickListener { TealiumHelper.trackEvent("search", emptyMap()) }
 
-        checkoutBtn = findViewById<Button>(R.id.checkoutBtn)
-        checkoutBtn.setOnClickListener{ TealiumHelper.trackEvent("checkout", hashMap)}
+        registerBtn.setOnClickListener { TealiumHelper.trackEvent("user_register", emptyMap()) }
 
-        searchBtn = findViewById<Button>(R.id.searchBtn)
-        searchBtn.setOnClickListener{ TealiumHelper.trackEvent("search", hashMap)}
+        viewBtn.setOnClickListener { TealiumHelper.trackEvent("view", emptyMap()) }
 
-        registerBtn = findViewById<Button>(R.id.registerBtn)
-        registerBtn.setOnClickListener{ TealiumHelper.trackEvent("user_register", hashMap)}
+        achievementBtn.setOnClickListener { TealiumHelper.trackEvent("achievement", emptyMap()) }
 
-        viewBtn = findViewById<Button>(R.id.viewBtn)
-        viewBtn.setOnClickListener{ TealiumHelper.trackEvent("view", hashMap)}
-
-        achievementBtn = findViewById<Button>(R.id.achievementBtn)
-        achievementBtn.setOnClickListener{ TealiumHelper.trackEvent("achievement", hashMap)}
-
-        customBtn = findViewById<Button>(R.id.customBtn)
-        customBtn.setOnClickListener{ TealiumHelper.trackEvent("custom", hashMap)}
+        customBtn.setOnClickListener { TealiumHelper.trackEvent("custom", emptyMap()) }
     }
 }
