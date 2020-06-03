@@ -95,11 +95,11 @@ class KochavaRemoteCommandTest {
         tutorialProperties.put(Parameters.NAME, "tutorial")
         tutorialProperties.put(Parameters.DURATION, 10.50)
 
-        every { mockTracker.tutorialLevelComplete(any(), any(), any(), any()) } just Runs
+        every { mockTracker.tutorialComplete(any(), any(), any()) } just Runs
 
         kochavaRemoteCommand.parseCommands(arrayOf(Commands.TUTORIAL_COMPLETE), tutorialProperties)
         verify {
-            mockTracker.tutorialLevelComplete(Commands.TUTORIAL_COMPLETE, "10", "tutorial", 10.50)
+            mockTracker.tutorialComplete("10", "tutorial", 10.50)
         }
         confirmVerified(mockTracker)
     }
@@ -128,11 +128,11 @@ class KochavaRemoteCommandTest {
         tutorialProperties.put(Parameters.USER_ID, "10")
         tutorialProperties.put(Parameters.NAME, "level")
 
-        every { mockTracker.tutorialLevelComplete(any(), any(), any(), any()) } just Runs
+        every { mockTracker.levelComplete(any(), any(), any()) } just Runs
 
         kochavaRemoteCommand.parseCommands(arrayOf(Commands.LEVEL_COMPLETE), tutorialProperties)
         verify {
-            mockTracker.tutorialLevelComplete(Commands.LEVEL_COMPLETE, "10", "level", Double.NaN)
+            mockTracker.levelComplete("10", "level", Double.NaN)
         }
         confirmVerified(mockTracker)
     }
