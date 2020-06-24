@@ -52,12 +52,15 @@ class KochavaRemoteCommandTest {
     @Test
     fun purchaseCalledWithStandardParameters() {
         val purchaseProperties = JSONObject()
-        purchaseProperties.put(Parameters.USER_ID, "10")
-        purchaseProperties.put(Parameters.NAME, "name")
-        purchaseProperties.put(Parameters.CONTENT_ID, "100")
-        purchaseProperties.put(Parameters.PRICE, 10.99)
-        purchaseProperties.put(Parameters.CURRENCY, "usd")
-        purchaseProperties.put(Parameters.CHECKOUT_AS_GUEST, "yes")
+        val eventParams = JSONObject()
+        eventParams.put(EventParameters.USER_ID, "10")
+        eventParams.put(EventParameters.NAME, "name")
+        eventParams.put(EventParameters.CONTENT_ID, "100")
+        eventParams.put(EventParameters.PRICE, 10.99)
+        eventParams.put(EventParameters.CURRENCY, "usd")
+        eventParams.put(EventParameters.CHECKOUT_AS_GUEST, "yes")
+
+        purchaseProperties.put("event_parameters", eventParams)
 
         every { mockTracker.purchase(any(), any(), any(), any(), any(), any()) } just Runs
 
@@ -71,11 +74,13 @@ class KochavaRemoteCommandTest {
     @Test
     fun purchaseCalledWithCustomParameters() {
         val parameters = JSONObject()
+        val eventParams = JSONObject()
         val infoDictionary = JSONObject()
         infoDictionary.put("key1", "value1")
         infoDictionary.put("key2", 2)
 
-        parameters.put("info_dictionary", infoDictionary)
+        eventParams.put("info_dictionary", infoDictionary)
+        parameters.put("event_parameters", eventParams)
 
         every { mockTracker.customEvent(any(), any()) } just Runs
 
@@ -90,9 +95,12 @@ class KochavaRemoteCommandTest {
     @Test
     fun tutorialCompleteCalledWithStandardParameters() {
         val tutorialProperties = JSONObject()
-        tutorialProperties.put(Parameters.USER_ID, "10")
-        tutorialProperties.put(Parameters.NAME, "tutorial")
-        tutorialProperties.put(Parameters.DURATION, 10.50)
+        val eventParams = JSONObject()
+        eventParams.put(EventParameters.USER_ID, "10")
+        eventParams.put(EventParameters.NAME, "tutorial")
+        eventParams.put(EventParameters.DURATION, 10.50)
+
+        tutorialProperties.put("event_parameters", eventParams)
 
         every { mockTracker.tutorialComplete(any(), any(), any()) } just Runs
 
@@ -106,11 +114,13 @@ class KochavaRemoteCommandTest {
     @Test
     fun tutorialCompleteCalledWithCustomParameters() {
         val parameters = JSONObject()
+        val eventParams = JSONObject()
         val infoDictionary = JSONObject()
         infoDictionary.put("key1", "value1")
         infoDictionary.put("key2", 2)
 
-        parameters.put("info_dictionary", infoDictionary)
+        eventParams.put("info_dictionary", infoDictionary)
+        parameters.put("event_parameters", eventParams)
 
         every { mockTracker.customEvent(any(), any()) } just Runs
 
@@ -124,8 +134,11 @@ class KochavaRemoteCommandTest {
     @Test
     fun levelCompleteCalledWithStandardParameters() {
         val tutorialProperties = JSONObject()
-        tutorialProperties.put(Parameters.USER_ID, "10")
-        tutorialProperties.put(Parameters.NAME, "level")
+        val eventParams = JSONObject()
+        eventParams.put(EventParameters.USER_ID, "10")
+        eventParams.put(EventParameters.NAME, "level")
+
+        tutorialProperties.put("event_parameters", eventParams)
 
         every { mockTracker.levelComplete(any(), any(), any()) } just Runs
 
@@ -139,11 +152,13 @@ class KochavaRemoteCommandTest {
     @Test
     fun levelCompleteCalledWithCustomParameters() {
         val parameters = JSONObject()
+        val eventParams = JSONObject()
         val infoDictionary = JSONObject()
         infoDictionary.put("key1", "value1")
         infoDictionary.put("key2", 2)
 
-        parameters.put("info_dictionary", infoDictionary)
+        eventParams.put("info_dictionary", infoDictionary)
+        parameters.put("event_parameters", eventParams)
 
         every { mockTracker.customEvent(any(), any()) } just Runs
 
@@ -157,13 +172,16 @@ class KochavaRemoteCommandTest {
     @Test
     fun adViewWithStandardParameters() {
         val adviewProperties = JSONObject()
-        adviewProperties.put(Parameters.AD_TYPE, "type")
-        adviewProperties.put(Parameters.AD_NETWORK_NAME, "tutorial")
-        adviewProperties.put(Parameters.PLACEMENT, "placement")
-        adviewProperties.put(Parameters.AD_MEDIATION_NAME, "mediation")
-        adviewProperties.put(Parameters.AD_CAMPAIGN_ID, "100")
-        adviewProperties.put(Parameters.AD_CAMPAIGN_NAME, "campaign")
-        adviewProperties.put(Parameters.AD_SIZE, "5")
+        val eventParams = JSONObject()
+        eventParams.put(EventParameters.AD_TYPE, "type")
+        eventParams.put(EventParameters.AD_NETWORK_NAME, "tutorial")
+        eventParams.put(EventParameters.PLACEMENT, "placement")
+        eventParams.put(EventParameters.AD_MEDIATION_NAME, "mediation")
+        eventParams.put(EventParameters.AD_CAMPAIGN_ID, "100")
+        eventParams.put(EventParameters.AD_CAMPAIGN_NAME, "campaign")
+        eventParams.put(EventParameters.AD_SIZE, "5")
+
+        adviewProperties.put("event_parameters", eventParams)
 
         every { mockTracker.adView(any(), any(), any(), any(), any(), any(), any()) } just Runs
 
@@ -176,14 +194,30 @@ class KochavaRemoteCommandTest {
 
     @Test
     fun adViewCalledWithCustomParameters() {
-        val adviewProperties = JSONObject()
-        adviewProperties.put(Parameters.AD_TYPE, "type")
+        val eventParams = JSONObject()
+        eventParams.put(EventParameters.AD_TYPE, "type")
+        eventParams.put(EventParameters.AD_NETWORK_NAME, "tutorial")
+        eventParams.put(EventParameters.PLACEMENT, "placement")
+        eventParams.put(EventParameters.AD_MEDIATION_NAME, "mediation")
+        eventParams.put(EventParameters.AD_CAMPAIGN_ID, "100")
+        eventParams.put(EventParameters.AD_CAMPAIGN_NAME, "campaign")
+        eventParams.put(EventParameters.AD_SIZE, "5")
 
         val parameters = JSONObject()
         val infoDictionary = JSONObject()
         infoDictionary.put("key1", "value1")
         infoDictionary.put("key2", 2)
-        parameters.put("info_dictionary", infoDictionary)
+
+        eventParams.put("info_dictionary", infoDictionary)
+        parameters.put("event_parameters", eventParams)
+
+        infoDictionary.put(EventParameters.AD_TYPE, "type")
+        infoDictionary.put(EventParameters.AD_NETWORK_NAME, "tutorial")
+        infoDictionary.put(EventParameters.PLACEMENT, "placement")
+        infoDictionary.put(EventParameters.AD_MEDIATION_NAME, "mediation")
+        infoDictionary.put(EventParameters.AD_CAMPAIGN_ID, "100")
+        infoDictionary.put(EventParameters.AD_CAMPAIGN_NAME, "campaign")
+        infoDictionary.put(EventParameters.AD_SIZE, "5")
 
         every { mockTracker.customEvent(any(), any()) } just Runs
 
@@ -197,8 +231,11 @@ class KochavaRemoteCommandTest {
     @Test
     fun ratingWithStandardParameters() {
         val ratingProperties = JSONObject()
-        ratingProperties.put(Parameters.RATING_VALUE, 5.3)
-        ratingProperties.put(Parameters.MAX_RATING_VALUE, 10.0)
+        val eventParams = JSONObject()
+        eventParams.put(EventParameters.RATING_VALUE, 5.3)
+        eventParams.put(EventParameters.MAX_RATING_VALUE, 10.0)
+
+        ratingProperties.put("event_parameters", eventParams)
 
         every { mockTracker.rating(any(), any()) } just Runs
 
@@ -211,24 +248,24 @@ class KochavaRemoteCommandTest {
 
     @Test
     fun ratingCalledWithCustomParameters() {
-        val ratingProperties = JSONObject()
-        ratingProperties.put(Parameters.RATING_VALUE, 3.2)
+        val parameters = JSONObject()
+        val eventParams = JSONObject()
+        eventParams.put(EventParameters.RATING_VALUE, 3.2)
 
         val infoDictionary = JSONObject()
         infoDictionary.put("key1", "value1")
         infoDictionary.put("key2", 2)
-        ratingProperties.put("info_dictionary", infoDictionary)
 
-        val mergedParams = JSONObject()
-        mergedParams.put(Parameters.RATING_VALUE, 3.2)
-        mergedParams.put("key1", "value1")
-        mergedParams.put("key2", 2)
+        eventParams.put("info_dictionary", infoDictionary)
+        parameters.put("event_parameters", eventParams)
+
+        infoDictionary.put(EventParameters.RATING_VALUE, 3.2)
 
         every { mockTracker.customEvent(any(), any()) } just Runs
 
-        kochavaRemoteCommand.parseCommands(arrayOf(Commands.RATING), ratingProperties)
+        kochavaRemoteCommand.parseCommands(arrayOf(Commands.RATING), parameters)
         verify {
-            mockTracker.customEvent(Commands.RATING, mergedParams.toString())
+            mockTracker.customEvent(Commands.RATING, infoDictionary.toString())
         }
         confirmVerified(mockTracker)
     }
@@ -236,10 +273,13 @@ class KochavaRemoteCommandTest {
     @Test
     fun addToCartWithStandardParameters() {
         val cartProperties = JSONObject()
-        cartProperties.put(Parameters.USER_ID, "abc")
-        cartProperties.put(Parameters.NAME, "name")
-        cartProperties.put(Parameters.CONTENT_ID, "def")
-        cartProperties.put(Parameters.QUANTITY, 3.0)
+        val eventParams = JSONObject()
+        eventParams.put(EventParameters.USER_ID, "abc")
+        eventParams.put(EventParameters.NAME, "name")
+        eventParams.put(EventParameters.CONTENT_ID, "def")
+        eventParams.put(EventParameters.QUANTITY, 3.0)
+
+        cartProperties.put("event_parameters", eventParams)
 
         every { mockTracker.addToCart(any(), any(), any(), any(), any()) } just Runs
 
@@ -252,30 +292,30 @@ class KochavaRemoteCommandTest {
 
     @Test
     fun addToCartCalledWithCustomParameters() {
-        val cartProperties = JSONObject()
-        cartProperties.put(Parameters.REFERRAL_FROM, "referral")
-        cartProperties.put(Parameters.USER_ID, "abc")
-        cartProperties.put(Parameters.NAME, "name")
-        cartProperties.put(Parameters.CONTENT_ID, "def")
+        val parameters = JSONObject()
+        val eventParams = JSONObject()
+        eventParams.put(EventParameters.REFERRAL_FROM, "referral")
+        eventParams.put(EventParameters.USER_ID, "abc")
+        eventParams.put(EventParameters.NAME, "name")
+        eventParams.put(EventParameters.CONTENT_ID, "def")
 
         val infoDictionary = JSONObject()
         infoDictionary.put("key1", "value1")
         infoDictionary.put("key2", 2)
-        cartProperties.put("info_dictionary", infoDictionary)
 
-        val mergedParams = JSONObject()
-        mergedParams.put(Parameters.REFERRAL_FROM, "referral")
-        mergedParams.put(Parameters.USER_ID, "abc")
-        mergedParams.put(Parameters.NAME, "name")
-        mergedParams.put(Parameters.CONTENT_ID, "def")
-        mergedParams.put("key1", "value1")
-        mergedParams.put("key2", 2)
+        eventParams.put("info_dictionary", infoDictionary)
+        parameters.put("event_parameters", eventParams)
+
+        infoDictionary.put(EventParameters.REFERRAL_FROM, "referral")
+        infoDictionary.put(EventParameters.USER_ID, "abc")
+        infoDictionary.put(EventParameters.NAME, "name")
+        infoDictionary.put(EventParameters.CONTENT_ID, "def")
 
         every { mockTracker.customEvent(any(), any()) } just Runs
 
-        kochavaRemoteCommand.parseCommands(arrayOf(Commands.ADD_TO_CART), cartProperties)
+        kochavaRemoteCommand.parseCommands(arrayOf(Commands.ADD_TO_CART), parameters)
         verify {
-            mockTracker.customEvent(Commands.ADD_TO_CART, mergedParams.toString())
+            mockTracker.customEvent(Commands.ADD_TO_CART, infoDictionary.toString())
         }
         confirmVerified(mockTracker)
     }
@@ -283,9 +323,12 @@ class KochavaRemoteCommandTest {
     @Test
     fun addToWishlistWithStandardParameters() {
         val wishlistProperties = JSONObject()
-        wishlistProperties.put(Parameters.USER_ID, "abc")
-        wishlistProperties.put(Parameters.NAME, "name")
-        wishlistProperties.put(Parameters.CONTENT_ID, "def")
+        val eventParams = JSONObject()
+        eventParams.put(EventParameters.USER_ID, "abc")
+        eventParams.put(EventParameters.NAME, "name")
+        eventParams.put(EventParameters.CONTENT_ID, "def")
+
+        wishlistProperties.put("event_parameters", eventParams)
 
         every { mockTracker.addToWishList(any(), any(), any(), any()) } just Runs
 
@@ -298,30 +341,30 @@ class KochavaRemoteCommandTest {
 
     @Test
     fun addToWishlistCalledWithCustomParameters() {
-        val wishlistProperties = JSONObject()
-        wishlistProperties.put(Parameters.REFERRAL_FROM, "referral")
-        wishlistProperties.put(Parameters.USER_ID, "abc")
-        wishlistProperties.put(Parameters.NAME, "name")
-        wishlistProperties.put(Parameters.CONTENT_ID, "def")
+        val parameters = JSONObject()
+        val eventParams = JSONObject()
+        eventParams.put(EventParameters.REFERRAL_FROM, "referral")
+        eventParams.put(EventParameters.USER_ID, "abc")
+        eventParams.put(EventParameters.NAME, "name")
+        eventParams.put(EventParameters.CONTENT_ID, "def")
 
         val infoDictionary = JSONObject()
         infoDictionary.put("key1", "value1")
         infoDictionary.put("key2", 2)
-        wishlistProperties.put("info_dictionary", infoDictionary)
 
-        val mergedParams = JSONObject()
-        mergedParams.put(Parameters.REFERRAL_FROM, "referral")
-        mergedParams.put(Parameters.USER_ID, "abc")
-        mergedParams.put(Parameters.NAME, "name")
-        mergedParams.put(Parameters.CONTENT_ID, "def")
-        mergedParams.put("key1", "value1")
-        mergedParams.put("key2", 2)
+        eventParams.put("info_dictionary", infoDictionary)
+        parameters.put("event_parameters", eventParams)
+
+        infoDictionary.put(EventParameters.REFERRAL_FROM, "referral")
+        infoDictionary.put(EventParameters.USER_ID, "abc")
+        infoDictionary.put(EventParameters.NAME, "name")
+        infoDictionary.put(EventParameters.CONTENT_ID, "def")
 
         every { mockTracker.customEvent(any(), any()) } just Runs
 
-        kochavaRemoteCommand.parseCommands(arrayOf(Commands.ADD_TO_WISH_LIST), wishlistProperties)
+        kochavaRemoteCommand.parseCommands(arrayOf(Commands.ADD_TO_WISH_LIST), parameters)
         verify {
-            mockTracker.customEvent(Commands.ADD_TO_WISH_LIST, mergedParams.toString())
+            mockTracker.customEvent(Commands.ADD_TO_WISH_LIST, infoDictionary.toString())
         }
         confirmVerified(mockTracker)
     }
@@ -329,8 +372,11 @@ class KochavaRemoteCommandTest {
     @Test
     fun checkoutWithStandardParameters() {
         val checkoutProperties = JSONObject()
-        checkoutProperties.put(Parameters.USER_ID, "abc")
-        checkoutProperties.put(Parameters.CONTENT_ID, "def")
+        val eventParams = JSONObject()
+        eventParams.put(EventParameters.USER_ID, "abc")
+        eventParams.put(EventParameters.CONTENT_ID, "def")
+
+        checkoutProperties.put("event_parameters", eventParams)
 
         every { mockTracker.checkoutStart(any(), any(), any(), any(), any()) } just Runs
 
@@ -343,32 +389,32 @@ class KochavaRemoteCommandTest {
 
     @Test
     fun checkoutCalledWithCustomParameters() {
-        val checkoutProperties = JSONObject()
-        checkoutProperties.put(Parameters.USER_ID, "abc")
-        checkoutProperties.put(Parameters.CONTENT_ID, "abc")
-        checkoutProperties.put(Parameters.CHECKOUT_AS_GUEST, "yes")
-        checkoutProperties.put(Parameters.NAME, "name")
-        checkoutProperties.put(Parameters.CURRENCY, "usd")
+        val parameters = JSONObject()
+        val eventParams = JSONObject()
+        eventParams.put(EventParameters.USER_ID, "abc")
+        eventParams.put(EventParameters.CONTENT_ID, "abc")
+        eventParams.put(EventParameters.CHECKOUT_AS_GUEST, "yes")
+        eventParams.put(EventParameters.NAME, "name")
+        eventParams.put(EventParameters.CURRENCY, "usd")
 
         val infoDictionary = JSONObject()
         infoDictionary.put("key1", "value1")
         infoDictionary.put("key2", 2)
-        checkoutProperties.put("info_dictionary", infoDictionary)
 
-        val mergedParams = JSONObject()
-        mergedParams.put(Parameters.USER_ID, "abc")
-        mergedParams.put(Parameters.CONTENT_ID, "abc")
-        mergedParams.put(Parameters.CHECKOUT_AS_GUEST, "yes")
-        mergedParams.put(Parameters.NAME, "name")
-        mergedParams.put(Parameters.CURRENCY, "usd")
-        mergedParams.put("key1", "value1")
-        mergedParams.put("key2", 2)
+        eventParams.put("info_dictionary", infoDictionary)
+        parameters.put("event_parameters", eventParams)
+
+        infoDictionary.put(EventParameters.USER_ID, "abc")
+        infoDictionary.put(EventParameters.CONTENT_ID, "abc")
+        infoDictionary.put(EventParameters.CHECKOUT_AS_GUEST, "yes")
+        infoDictionary.put(EventParameters.NAME, "name")
+        infoDictionary.put(EventParameters.CURRENCY, "usd")
 
         every { mockTracker.customEvent(any(), any()) } just Runs
 
-        kochavaRemoteCommand.parseCommands(arrayOf(Commands.CHECKOUT_START), checkoutProperties)
+        kochavaRemoteCommand.parseCommands(arrayOf(Commands.CHECKOUT_START), parameters)
         verify {
-            mockTracker.customEvent(Commands.CHECKOUT_START, mergedParams.toString())
+            mockTracker.customEvent(Commands.CHECKOUT_START, infoDictionary.toString())
         }
         confirmVerified(mockTracker)
     }
@@ -376,7 +422,10 @@ class KochavaRemoteCommandTest {
     @Test
     fun searchWithStandardParameters() {
         val searchProperties = JSONObject()
-        searchProperties.put(Parameters.URI, "abc")
+        val eventParams = JSONObject()
+        eventParams.put(EventParameters.URI, "abc")
+
+        searchProperties.put("event_parameters", eventParams)
 
         every { mockTracker.search(any(), any()) } just Runs
 
@@ -389,26 +438,26 @@ class KochavaRemoteCommandTest {
 
     @Test
     fun searchCalledWithCustomParameters() {
-        val searchProperties = JSONObject()
-        searchProperties.put(Parameters.URI, "abc")
-        searchProperties.put(Parameters.RESULTS, "def")
+        val parameters = JSONObject()
+        val eventParams = JSONObject()
+        eventParams.put(EventParameters.URI, "abc")
+        eventParams.put(EventParameters.RESULTS, "def")
 
         val infoDictionary = JSONObject()
         infoDictionary.put("key1", "value1")
         infoDictionary.put("key2", 2)
-        searchProperties.put("info_dictionary", infoDictionary)
 
-        val mergedParams = JSONObject()
-        mergedParams.put(Parameters.URI, "abc")
-        mergedParams.put(Parameters.RESULTS, "def")
-        mergedParams.put("key1", "value1")
-        mergedParams.put("key2", 2)
+        eventParams.put("info_dictionary", infoDictionary)
+        parameters.put("event_parameters", eventParams)
+
+        infoDictionary.put(EventParameters.URI, "abc")
+        infoDictionary.put(EventParameters.RESULTS, "def")
 
         every { mockTracker.customEvent(any(), any()) } just Runs
 
-        kochavaRemoteCommand.parseCommands(arrayOf(Commands.SEARCH), searchProperties)
+        kochavaRemoteCommand.parseCommands(arrayOf(Commands.SEARCH), parameters)
         verify {
-            mockTracker.customEvent(Commands.SEARCH, mergedParams.toString())
+            mockTracker.customEvent(Commands.SEARCH, infoDictionary.toString())
         }
         confirmVerified(mockTracker)
     }
@@ -417,9 +466,12 @@ class KochavaRemoteCommandTest {
     @Test
     fun registerWithStandardParameters() {
         val registrationProperties = JSONObject()
-        registrationProperties.put(Parameters.USER_ID, "abc")
-        registrationProperties.put(Parameters.USER_NAME, "def")
-        registrationProperties.put(Parameters.REFERRAL_FROM, "referral")
+        val eventParams = JSONObject()
+        eventParams.put(EventParameters.USER_ID, "abc")
+        eventParams.put(EventParameters.USER_NAME, "def")
+        eventParams.put(EventParameters.REFERRAL_FROM, "referral")
+
+        registrationProperties.put("event_parameters", eventParams)
 
         every { mockTracker.registrationComplete(any(), any(), any()) } just Runs
 
@@ -435,31 +487,31 @@ class KochavaRemoteCommandTest {
 
     @Test
     fun registerCalledWithCustomParameters() {
-        val registrationProperties = JSONObject()
-        registrationProperties.put(Parameters.USER_ID, "abc")
-        registrationProperties.put(Parameters.USER_NAME, "def")
-        registrationProperties.put(Parameters.REFERRAL_FROM, "referral")
+        val parameters = JSONObject()
+        val eventParams = JSONObject()
+        eventParams.put(EventParameters.USER_ID, "abc")
+        eventParams.put(EventParameters.USER_NAME, "def")
+        eventParams.put(EventParameters.REFERRAL_FROM, "referral")
 
         val infoDictionary = JSONObject()
         infoDictionary.put("key1", "value1")
         infoDictionary.put("key2", 2)
-        registrationProperties.put("info_dictionary", infoDictionary)
 
-        val mergedParams = JSONObject()
-        mergedParams.put(Parameters.USER_ID, "abc")
-        mergedParams.put(Parameters.USER_NAME, "def")
-        mergedParams.put(Parameters.REFERRAL_FROM, "referral")
-        mergedParams.put("key1", "value1")
-        mergedParams.put("key2", 2)
+        eventParams.put("info_dictionary", infoDictionary)
+        parameters.put("event_parameters", eventParams)
+
+        infoDictionary.put(EventParameters.USER_ID, "abc")
+        infoDictionary.put(EventParameters.USER_NAME, "def")
+        infoDictionary.put(EventParameters.REFERRAL_FROM, "referral")
 
         every { mockTracker.customEvent(any(), any()) } just Runs
 
         kochavaRemoteCommand.parseCommands(
             arrayOf(Commands.REGISTRATION_COMPLETE),
-            registrationProperties
+            parameters
         )
         verify {
-            mockTracker.customEvent(Commands.REGISTRATION_COMPLETE, mergedParams.toString())
+            mockTracker.customEvent(Commands.REGISTRATION_COMPLETE, infoDictionary.toString())
         }
         confirmVerified(mockTracker)
     }
@@ -467,9 +519,12 @@ class KochavaRemoteCommandTest {
     @Test
     fun viewWithStandardParameters() {
         val viewProperties = JSONObject()
-        viewProperties.put(Parameters.USER_ID, "abc")
-        viewProperties.put(Parameters.NAME, "name")
-        viewProperties.put(Parameters.CONTENT_ID, "def")
+        val eventParams = JSONObject()
+        eventParams.put(EventParameters.USER_ID, "abc")
+        eventParams.put(EventParameters.NAME, "name")
+        eventParams.put(EventParameters.CONTENT_ID, "def")
+
+        viewProperties.put("event_parameters", eventParams)
 
         every { mockTracker.view(any(), any(), any(), any()) } just Runs
 
@@ -482,30 +537,30 @@ class KochavaRemoteCommandTest {
 
     @Test
     fun viewCalledWithCustomParameters() {
-        val viewProperties = JSONObject()
-        viewProperties.put(Parameters.USER_ID, "abc")
-        viewProperties.put(Parameters.NAME, "name")
-        viewProperties.put(Parameters.CONTENT_ID, "def")
-        viewProperties.put(Parameters.REFERRAL_FROM, "ref")
+        val parameters = JSONObject()
+        val eventParams = JSONObject()
+        eventParams.put(EventParameters.USER_ID, "abc")
+        eventParams.put(EventParameters.NAME, "name")
+        eventParams.put(EventParameters.CONTENT_ID, "def")
+        eventParams.put(EventParameters.REFERRAL_FROM, "ref")
 
         val infoDictionary = JSONObject()
         infoDictionary.put("key1", "value1")
         infoDictionary.put("key2", 2)
-        viewProperties.put("info_dictionary", infoDictionary)
 
-        val mergedParams = JSONObject()
-        mergedParams.put(Parameters.USER_ID, "abc")
-        mergedParams.put(Parameters.NAME, "name")
-        mergedParams.put(Parameters.CONTENT_ID, "def")
-        mergedParams.put(Parameters.REFERRAL_FROM, "ref")
-        mergedParams.put("key1", "value1")
-        mergedParams.put("key2", 2)
+        eventParams.put("info_dictionary", infoDictionary)
+        parameters.put("event_parameters", eventParams)
+
+        infoDictionary.put(EventParameters.USER_ID, "abc")
+        infoDictionary.put(EventParameters.NAME, "name")
+        infoDictionary.put(EventParameters.CONTENT_ID, "def")
+        infoDictionary.put(EventParameters.REFERRAL_FROM, "ref")
 
         every { mockTracker.customEvent(any(), any()) } just Runs
 
-        kochavaRemoteCommand.parseCommands(arrayOf(Commands.VIEW), viewProperties)
+        kochavaRemoteCommand.parseCommands(arrayOf(Commands.VIEW), parameters)
         verify {
-            mockTracker.customEvent(Commands.VIEW, mergedParams.toString())
+            mockTracker.customEvent(Commands.VIEW, infoDictionary.toString())
         }
         confirmVerified(mockTracker)
     }
@@ -513,8 +568,11 @@ class KochavaRemoteCommandTest {
     @Test
     fun achievementWithStandardParameters() {
         val achievementProperties = JSONObject()
-        achievementProperties.put(Parameters.USER_ID, "abc")
-        achievementProperties.put(Parameters.NAME, "name")
+        val eventParams = JSONObject()
+        eventParams.put(EventParameters.USER_ID, "abc")
+        eventParams.put(EventParameters.NAME, "name")
+
+        achievementProperties.put("event_parameters", eventParams)
 
         every { mockTracker.achievement(any(), any(), any()) } just Runs
         kochavaRemoteCommand.parseCommands(arrayOf(Commands.ACHIEVEMENT), achievementProperties)
@@ -526,26 +584,26 @@ class KochavaRemoteCommandTest {
 
     @Test
     fun achievementCalledWithCustomParameters() {
-        val achievementProperties = JSONObject()
-        achievementProperties.put(Parameters.USER_ID, "abc")
-        achievementProperties.put(Parameters.NAME, "name")
+        val parameters = JSONObject()
+        val eventParams = JSONObject()
+        eventParams.put(EventParameters.USER_ID, "abc")
+        eventParams.put(EventParameters.NAME, "name")
 
         val infoDictionary = JSONObject()
         infoDictionary.put("key1", "value1")
         infoDictionary.put("key2", 2)
-        achievementProperties.put("info_dictionary", infoDictionary)
 
-        val mergedParams = JSONObject()
-        mergedParams.put(Parameters.USER_ID, "abc")
-        mergedParams.put(Parameters.NAME, "name")
-        mergedParams.put("key1", "value1")
-        mergedParams.put("key2", 2)
+        eventParams.put("info_dictionary", infoDictionary)
+        parameters.put("event_parameters", eventParams)
+
+        infoDictionary.put(EventParameters.USER_ID, "abc")
+        infoDictionary.put(EventParameters.NAME, "name")
 
         every { mockTracker.customEvent(any(), any()) } just Runs
 
-        kochavaRemoteCommand.parseCommands(arrayOf(Commands.ACHIEVEMENT), achievementProperties)
+        kochavaRemoteCommand.parseCommands(arrayOf(Commands.ACHIEVEMENT), parameters)
         verify {
-            mockTracker.customEvent(Commands.ACHIEVEMENT, mergedParams.toString())
+            mockTracker.customEvent(Commands.ACHIEVEMENT, infoDictionary.toString())
         }
         confirmVerified(mockTracker)
     }
@@ -554,7 +612,10 @@ class KochavaRemoteCommandTest {
     @Test
     fun deepLinkWithStandardParameters() {
         val deepLinkProperties = JSONObject()
-        deepLinkProperties.put(Parameters.URI, "abc")
+        val eventParams = JSONObject()
+        eventParams.put(EventParameters.URI, "abc")
+
+        deepLinkProperties.put("event_parameters", eventParams)
 
         every { mockTracker.deepLink(any()) } just Runs
         kochavaRemoteCommand.parseCommands(arrayOf(Commands.DEEP_LINK), deepLinkProperties)
@@ -566,24 +627,24 @@ class KochavaRemoteCommandTest {
 
     @Test
     fun deepLinkCalledWithCustomParameters() {
-        val deepLinkProperties = JSONObject()
-        deepLinkProperties.put(Parameters.USER_ID, "abc")
+        val parameters = JSONObject()
+        val eventParams = JSONObject()
+        eventParams.put(EventParameters.USER_ID, "abc")
 
         val infoDictionary = JSONObject()
         infoDictionary.put("key1", "value1")
         infoDictionary.put("key2", 2)
-        deepLinkProperties.put("info_dictionary", infoDictionary)
 
-        val mergedParams = JSONObject()
-        mergedParams.put(Parameters.USER_ID, "abc")
-        mergedParams.put("key1", "value1")
-        mergedParams.put("key2", 2)
+        eventParams.put("info_dictionary", infoDictionary)
+        parameters.put("event_parameters", eventParams)
+
+        infoDictionary.put(EventParameters.USER_ID, "abc")
 
         every { mockTracker.customEvent(any(), any()) } just Runs
 
-        kochavaRemoteCommand.parseCommands(arrayOf(Commands.DEEP_LINK), deepLinkProperties)
+        kochavaRemoteCommand.parseCommands(arrayOf(Commands.DEEP_LINK), parameters)
         verify {
-            mockTracker.customEvent(Commands.DEEP_LINK, mergedParams.toString())
+            mockTracker.customEvent(Commands.DEEP_LINK, infoDictionary.toString())
         }
         confirmVerified(mockTracker)
     }
@@ -591,9 +652,12 @@ class KochavaRemoteCommandTest {
     @Test
     fun subscribeWithStandardParameters() {
         val subscribeProperties = JSONObject()
-        subscribeProperties.put(Parameters.USER_ID, "abc")
-        subscribeProperties.put(Parameters.NAME, "name")
-        subscribeProperties.put(Parameters.CURRENCY, "USD")
+        val eventParams = JSONObject()
+        eventParams.put(EventParameters.USER_ID, "abc")
+        eventParams.put(EventParameters.NAME, "name")
+        eventParams.put(EventParameters.CURRENCY, "USD")
+
+        subscribeProperties.put("event_parameters", eventParams)
 
         every { mockTracker.subscribe(any(), any(), any(), any()) } just Runs
         kochavaRemoteCommand.parseCommands(arrayOf(Commands.SUBSCRIBE), subscribeProperties)
@@ -605,30 +669,30 @@ class KochavaRemoteCommandTest {
 
     @Test
     fun subscribeCalledWithCustomParameters() {
-        val subscribeProperties = JSONObject()
-        subscribeProperties.put(Parameters.PRICE, 9.0)
-        subscribeProperties.put(Parameters.NAME, "name")
-        subscribeProperties.put(Parameters.USER_ID, "abc")
-        subscribeProperties.put(Parameters.CURRENCY, "USD")
+        val parameters = JSONObject()
+        val eventParams = JSONObject()
+        eventParams.put(EventParameters.PRICE, 9.0)
+        eventParams.put(EventParameters.NAME, "name")
+        eventParams.put(EventParameters.USER_ID, "abc")
+        eventParams.put(EventParameters.CURRENCY, "USD")
 
         val infoDictionary = JSONObject()
         infoDictionary.put("key1", "value1")
         infoDictionary.put("key2", 2)
-        subscribeProperties.put("info_dictionary", infoDictionary)
 
-        val mergedParams = JSONObject()
-        mergedParams.put(Parameters.PRICE, 9.0)
-        mergedParams.put(Parameters.NAME, "name")
-        mergedParams.put(Parameters.USER_ID, "abc")
-        mergedParams.put(Parameters.CURRENCY, "USD")
-        mergedParams.put("key1", "value1")
-        mergedParams.put("key2", 2)
+        eventParams.put("info_dictionary", infoDictionary)
+        parameters.put("event_parameters", eventParams)
+
+        infoDictionary.put(EventParameters.PRICE, 9.0)
+        infoDictionary.put(EventParameters.NAME, "name")
+        infoDictionary.put(EventParameters.USER_ID, "abc")
+        infoDictionary.put(EventParameters.CURRENCY, "USD")
 
         every { mockTracker.customEvent(any(), any()) } just Runs
 
-        kochavaRemoteCommand.parseCommands(arrayOf(Commands.SUBSCRIBE), subscribeProperties)
+        kochavaRemoteCommand.parseCommands(arrayOf(Commands.SUBSCRIBE), parameters)
         verify {
-            mockTracker.customEvent(Commands.SUBSCRIBE, mergedParams.toString())
+            mockTracker.customEvent(Commands.SUBSCRIBE, infoDictionary.toString())
         }
         confirmVerified(mockTracker)
     }
@@ -636,9 +700,12 @@ class KochavaRemoteCommandTest {
     @Test
     fun startTrialWithStandardParameters() {
         val trialProperties = JSONObject()
-        trialProperties.put(Parameters.USER_ID, "abc")
-        trialProperties.put(Parameters.NAME, "name")
-        trialProperties.put(Parameters.CURRENCY, "USD")
+        val eventParams = JSONObject()
+        eventParams.put(EventParameters.USER_ID, "abc")
+        eventParams.put(EventParameters.NAME, "name")
+        eventParams.put(EventParameters.CURRENCY, "USD")
+
+        trialProperties.put("event_parameters", eventParams)
 
         every { mockTracker.startTrial(any(), any(), any(), any()) } just Runs
         kochavaRemoteCommand.parseCommands(arrayOf(Commands.START_TRIAL), trialProperties)
@@ -650,56 +717,60 @@ class KochavaRemoteCommandTest {
 
     @Test
     fun startTrialCalledWithCustomParameters() {
-        val trialProperties = JSONObject()
-        trialProperties.put(Parameters.PRICE, 9.0)
-        trialProperties.put(Parameters.NAME, "name")
-        trialProperties.put(Parameters.USER_ID, "abc")
-        trialProperties.put(Parameters.CURRENCY, "USD")
+        val eventParams = JSONObject()
+        val parameters = JSONObject()
+        eventParams.put(EventParameters.PRICE, 9.0)
+        eventParams.put(EventParameters.NAME, "name")
+        eventParams.put(EventParameters.USER_ID, "abc")
+        eventParams.put(EventParameters.CURRENCY, "USD")
 
         val infoDictionary = JSONObject()
         infoDictionary.put("key1", "value1")
         infoDictionary.put("key2", 2)
-        trialProperties.put("info_dictionary", infoDictionary)
 
-        val mergedParams = JSONObject()
-        mergedParams.put(Parameters.PRICE, 9.0)
-        mergedParams.put(Parameters.NAME, "name")
-        mergedParams.put(Parameters.USER_ID, "abc")
-        mergedParams.put(Parameters.CURRENCY, "USD")
-        mergedParams.put("key1", "value1")
-        mergedParams.put("key2", 2)
+        eventParams.put("info_dictionary", infoDictionary)
+        parameters.put("event_parameters", eventParams)
+
+        infoDictionary.put(EventParameters.PRICE, 9.0)
+        infoDictionary.put(EventParameters.NAME, "name")
+        infoDictionary.put(EventParameters.USER_ID, "abc")
+        infoDictionary.put(EventParameters.CURRENCY, "USD")
+        infoDictionary.put("key1", "value1")
+        infoDictionary.put("key2", 2)
 
         every { mockTracker.customEvent(any(), any()) } just Runs
 
-        kochavaRemoteCommand.parseCommands(arrayOf(Commands.START_TRIAL), trialProperties)
+        kochavaRemoteCommand.parseCommands(arrayOf(Commands.START_TRIAL), parameters)
         verify {
-            mockTracker.customEvent(Commands.START_TRIAL, mergedParams.toString())
+            mockTracker.customEvent(Commands.START_TRIAL, infoDictionary.toString())
         }
         confirmVerified(mockTracker)
     }
 
     @Test
     fun customEventAndParameters() {
-        val standardParams = JSONObject()
-        standardParams.put(Parameters.BACKGROUND, false)
-        standardParams.put(Parameters.COMPLETED, false)
+        val parameters = JSONObject()
+        val eventParams = JSONObject()
+        eventParams.put(EventParameters.BACKGROUND, false)
+        eventParams.put(EventParameters.COMPLETED, false)
 
         val infoDictionary = JSONObject()
         infoDictionary.put("key1", "value1")
         infoDictionary.put("key2", 2)
-        standardParams.put("info_dictionary", infoDictionary)
 
-        val mergedParams = JSONObject()
-        mergedParams.put(Parameters.BACKGROUND, false)
-        mergedParams.put(Parameters.COMPLETED, false)
-        mergedParams.put("key1", "value1")
-        mergedParams.put("key2", 2)
+        eventParams.put("info_dictionary", infoDictionary)
+        parameters.put("event_parameters", eventParams)
+
+        infoDictionary.put(EventParameters.BACKGROUND, false)
+        infoDictionary.put(EventParameters.COMPLETED, false)
+        infoDictionary.put("key1", "value1")
+        infoDictionary.put("key2", 2)
 
         every { mockTracker.customEvent(any(), any()) } just Runs
 
-        kochavaRemoteCommand.parseCommands(arrayOf("Any Event Name"), standardParams)
+        kochavaRemoteCommand.parseCommands(arrayOf("Any Event Name"), parameters)
         verify {
-            mockTracker.customEvent("Any Event Name", mergedParams.toString())
+            mockTracker.customEvent("Any Event Name", infoDictionary.toString())
         }
         confirmVerified(mockTracker)
     }

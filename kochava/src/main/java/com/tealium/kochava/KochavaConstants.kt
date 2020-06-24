@@ -22,7 +22,7 @@ object Commands {
     const val START_TRIAL = "starttrial"
 }
 
-object Parameters {
+object EventParameters {
     const val DEVICE_TYPE = "device_type"
     const val PLACEMENT = "placement"
     const val AD_TYPE = "ad_type"
@@ -71,5 +71,9 @@ object Parameters {
     const val LEVEL = "level"
     const val ITEM_ADDED_FROM = "item_added_from"
     const val CUSTOM_PARAMETERS = "info_dictionary"
+}
+
+object Parameters {
     const val CONFIGURATION_PARAMS = "configuration_params"
+    const val EVENT_PARAMS = "event_parameters"
 }
