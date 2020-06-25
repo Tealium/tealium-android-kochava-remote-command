@@ -1,7 +1,6 @@
 package com.tealium.remotecommands.kochava;
 
 import Commands
-import Parameters
 import android.app.Application
 import android.content.Context
 import com.tealium.kochava.KochavaRemoteCommand
