@@ -18,6 +18,10 @@ class KochavaTracker(application: Application, applicationId: String) : KochavaT
         )
     }
 
+    override fun setSleep(sleep: Boolean) {
+        Tracker.setSleep(sleep)
+    }
+
     override fun tutorialComplete(userId: String, name: String, duration: Double) {
         val event = Tracker.Event(Tracker.EVENT_TYPE_TUTORIAL_COMPLETE)
             .setUserId(userId)

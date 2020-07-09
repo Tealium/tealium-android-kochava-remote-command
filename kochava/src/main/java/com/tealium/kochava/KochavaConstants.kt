@@ -20,6 +20,7 @@ object Commands {
     const val DEEP_LINK = "deeplink"
     const val SUBSCRIBE = "subscribe"
     const val START_TRIAL = "starttrial"
+    const val SET_SLEEP = "setsleep"
 }
 
 object EventParameters {
@@ -70,6 +71,7 @@ object EventParameters {
     const val MAX_RATING_VALUE = "max_rating_value"
     const val LEVEL = "level"
     const val ITEM_ADDED_FROM = "item_added_from"
+    const val SLEEP = "sleep"
     const val CUSTOM_PARAMETERS = "info_dictionary"
 }
 

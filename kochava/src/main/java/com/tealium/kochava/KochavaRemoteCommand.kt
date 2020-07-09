@@ -1,8 +1,10 @@
 package com.tealium.kochava
 
 import Commands
+import EventParameters
 import Parameters
 import android.app.Application
+import com.kochava.base.Tracker.setSleep
 import com.tealium.internal.tagbridge.RemoteCommand
 import org.json.JSONObject
 
@@ -110,6 +112,9 @@ class KochavaRemoteCommand : RemoteCommand {
                 Commands.START_TRIAL -> {
                     startTrial(eventParams)
                 }
+                Commands.SET_SLEEP -> {
+                    setSleep(eventParams)
+                }
                 else -> {
                     logCustomEvent(command, eventParams)
                 }
@@ -126,6 +131,11 @@ class KochavaRemoteCommand : RemoteCommand {
 
     private fun logCustomEvent(eventName: String, payload: JSONObject) {
         tracker.customEvent(eventName, payload.toString())
+    }
+
+    private fun setSleep(setsleep: JSONObject) {
+        val sleep = setsleep.optBoolean(EventParameters.SLEEP)
+        tracker.setSleep(sleep)
     }
 
     private fun subscribe(subscribe: JSONObject) {
