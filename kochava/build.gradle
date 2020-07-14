@@ -1,6 +1,8 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'maven-publish'
+
 android {
     compileSdkVersion 29
     buildToolsVersion "29.0.3"
@@ -37,4 +39,24 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
     testImplementation "io.mockk:mockk:$mockk_version"
     implementation 'com.kochava.base:tracker:3.7.1'
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            groupId 'com.tealium.remotecommands'
+            artifactId 'kochava'
+            version "$tealium_kochava_version"
+            artifact("$buildDir/outputs/aar/kochava-release.aar")
+        }
+    }
+    repositories {
+        maven {
+            url "s3://maven.tealiumiq.com/android/releases/"
+            credentials(AwsCredentials) {
+                accessKey AWS_ACCESS_KEY
+                secretKey AWS_SECRET_KEY
+            }
+        }
+    }
 }
