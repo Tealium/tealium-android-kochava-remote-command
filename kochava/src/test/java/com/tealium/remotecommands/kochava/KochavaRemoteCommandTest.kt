@@ -757,19 +757,14 @@ class KochavaRemoteCommandTest {
         infoDictionary.put("key1", "value1")
         infoDictionary.put("key2", 2)
 
-        eventParams.put("info_dictionary", infoDictionary)
+        eventParams.put("info_dictionary", infoDictionary.toString())
         parameters.put("event_parameters", eventParams)
-
-        infoDictionary.put(EventParameters.BACKGROUND, false)
-        infoDictionary.put(EventParameters.COMPLETED, false)
-        infoDictionary.put("key1", "value1")
-        infoDictionary.put("key2", 2)
 
         every { mockTracker.customEvent(any(), any()) } just Runs
 
         kochavaRemoteCommand.parseCommands(arrayOf("Any Event Name"), parameters)
         verify {
-            mockTracker.customEvent("Any Event Name", infoDictionary.toString())
+            mockTracker.customEvent("Any Event Name", eventParams.toString())
         }
         confirmVerified(mockTracker)
     }
