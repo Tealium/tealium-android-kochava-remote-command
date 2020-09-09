@@ -38,7 +38,7 @@ object EventParameters {
     const val CONTENT_ID = "content_id"
     const val CONTENT_TYPE = "content_type"
     const val CURRENCY = "currency"
-    const val DATE = "date"
+    const val DATE = "now_date"
     const val DESCRIPTION = "description"
     const val DESTINATION = "destination"
     const val DURATION = "duration"

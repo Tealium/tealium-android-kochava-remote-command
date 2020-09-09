@@ -6,36 +6,60 @@ import org.json.JSONObject
 interface KochavaTrackable {
 
     fun configure(application: Application, parameters: JSONObject)
-    // Standard events
-    // Gaming
-    fun tutorialComplete(userId: String = "", name: String = "", duration: Double)
-    fun levelComplete(userId: String = "", name: String = "", duration: Double)
-    fun purchase(userId: String = "", name: String = "", contentId: String = "", price: Double, currency: String = "", guestCheckout: String = "")
-    fun adView(type: String = "", networkName: String = "", placement: String = "", mediationName: String = "", campaignId: String = "", campaignName: String = "", size: String = "")
-    fun rating(value: Double, maxRating: Double)
 
-    // Ecommerce
-    fun addToCart(userId: String = "", name: String = "", contentId: String = "", quantity: Double, referralForm: String = "")
-    fun addToWishList(userId: String = "", name: String = "", contentId: String = "", referralForm: String = "")
-    fun checkoutStart(userId: String = "", name: String = "", contentId: String = "", guestCheckout: String = "", currency: String = "")
-    fun search(URI: String, results: String)
-    fun subscribe(price: Double, currency: String, productName: String, userId: String)
-    fun startTrial(price: Double, currency: String, productName: String, userId: String)
-
-    // Ride hailing
-    fun registrationComplete(userId: String = "", userName: String = "", referralForm: String = "")
-
-    // Travel
-    fun view(userId: String = "", name: String = "", contentId: String = "", referralForm: String = "")
-
-    // Utility
-    fun achievement(userId: String = "", name: String = "", duration: Double)
-
-    fun deepLink(URI: String)
-
-    // Sleep tracker
     fun setSleep(sleep: Boolean)
 
-    // Custom events
+    fun logEvent(
+        eventName: String,
+        deviceType: String,
+        placement: String,
+        adType: String,
+        adCampaignId: String,
+        adCampaignName: String,
+        adSize: String,
+        adGroupName: String,
+        adGroupId: String,
+        adNetworkName: String,
+        adMediationName: String,
+        checkoutAsGuest: String,
+        contentId: String,
+        contentType: String,
+        currency: String,
+        date: String,
+        description: String,
+        destination: String,
+        duration: Double,
+        source: String,
+        uri: String,
+        completed: Boolean,
+        action: String,
+        background: Boolean,
+        spatialX: Double,
+        spatialY: Double,
+        spatialZ: Double,
+        validated: String,
+        userName: String,
+        userId: String,
+        success: String,
+        startDate: String,
+        endDate: String,
+        searchTerm: String,
+        source1: String,
+        score: String,
+        results: String,
+        registrationMethod: String,
+        referralFrom: String,
+        receiptId: String,
+        ratingValue: Double,
+        quantity: Double,
+        price: Double,
+        origin: String,
+        orderId: String,
+        name: String,
+        maxRatingValue: Double,
+        level: String,
+        itemAddedFrom: String
+    )
+
     fun customEvent(eventName: String, parameters: String)
 }

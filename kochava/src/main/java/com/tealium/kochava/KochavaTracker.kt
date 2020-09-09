@@ -1,5 +1,6 @@
 package com.tealium.kochava
 
+import android.annotation.SuppressLint
 import android.app.Application
 import com.kochava.base.Tracker
 import org.json.JSONObject
@@ -22,164 +23,134 @@ class KochavaTracker(application: Application, applicationId: String) : KochavaT
         Tracker.setSleep(sleep)
     }
 
-    override fun tutorialComplete(userId: String, name: String, duration: Double) {
-        val event = Tracker.Event(Tracker.EVENT_TYPE_TUTORIAL_COMPLETE)
-            .setUserId(userId)
-            .setName(name)
-        if (!duration.isNaN()) event.setDuration(duration)
-        Tracker.sendEvent(event)
-    }
-
-    override fun levelComplete(userId: String, name: String, duration: Double) {
-        val event = Tracker.Event(Tracker.EVENT_TYPE_LEVEL_COMPLETE)
-            .setUserId(userId)
-            .setName(name)
-        if (!duration.isNaN()) event.setDuration(duration)
-        Tracker.sendEvent(event)
-    }
-
-    override fun purchase (userId: String, name: String, contentId: String, price: Double, currency: String, guestCheckout: String) {
-        val event = Tracker.Event(Tracker.EVENT_TYPE_PURCHASE)
-            .setUserId(userId)
-            .setName(name)
-            .setContentId(contentId)
-            .setCurrency(currency)
-            .setCheckoutAsGuest(guestCheckout)
-        if (!price.isNaN()) event.setDuration(price)
-        Tracker.sendEvent(event)
-    }
-
-    override fun adView(
-        type: String,
-        networkName: String,
+    @SuppressLint("CheckResult")
+    override fun logEvent(
+        eventName: String,
+        deviceType: String,
         placement: String,
-        mediationName: String,
-        campaignId: String,
-        campaignName: String,
-        size: String
-    ) {
-        Tracker.sendEvent(
-            Tracker.Event(Tracker.EVENT_TYPE_AD_VIEW)
-                .setAdType(type)
-                .setAdNetworkName(networkName)
-                .setAdPlacement(placement)
-                .setAdMediationName(mediationName)
-                .setAdCampaignId(campaignId)
-                .setAdCampaignName(campaignName)
-                .setAdSize(size)
-        )
-    }
-
-    override fun rating(value: Double, maxRating: Double) {
-        Tracker.sendEvent(
-            Tracker.Event(Tracker.EVENT_TYPE_RATING)
-                .setRatingValue(value)
-                .setMaxRatingValue(maxRating)
-        )
-    }
-
-    override fun addToCart(
-        userId: String,
-        name: String,
+        adType: String,
+        adCampaignId: String,
+        adCampaignName: String,
+        adSize: String,
+        adGroupName: String,
+        adGroupId: String,
+        adNetworkName: String,
+        adMediationName: String,
+        checkoutAsGuest: String,
         contentId: String,
+        contentType: String,
+        currency: String,
+        date: String,
+        description: String,
+        destination: String,
+        duration: Double,
+        source: String,
+        uri: String,
+        completed: Boolean,
+        action: String,
+        background: Boolean,
+        spatialX: Double,
+        spatialY: Double,
+        spatialZ: Double,
+        validated: String,
+        userName: String,
+        userId: String,
+        success: String,
+        startDate: String,
+        endDate: String,
+        searchTerm: String,
+        source1: String,
+        score: String,
+        results: String,
+        registrationMethod: String,
+        referralFrom: String,
+        receiptId: String,
+        ratingValue: Double,
         quantity: Double,
-        referralForm: String
-    ) {
-        val event = Tracker.Event(Tracker.EVENT_TYPE_ADD_TO_CART)
-            .setUserId(userId)
-            .setName(name)
-            .setContentId(contentId)
-            .setReferralFrom(referralForm)
-        if (!quantity.isNaN()) event.setQuantity(quantity)
-        Tracker.sendEvent(event)
-    }
-
-    override fun addToWishList(
-        userId: String,
+        price: Double,
+        origin: String,
+        orderId: String,
         name: String,
-        contentId: String,
-        referralForm: String
+        maxRatingValue: Double,
+        level: String,
+        itemAddedFrom: String
     ) {
-        Tracker.sendEvent(
-            Tracker.Event(Tracker.EVENT_TYPE_ADD_TO_WISH_LIST)
-            .setUserId(userId)
-            .setName(name)
+        var event: Tracker.Event
+        if (eventName.equals(Commands.ACHIEVEMENT)) {
+            event = Tracker.Event(Tracker.EVENT_TYPE_ACHIEVEMENT)
+        } else if (eventName.equals(Commands.AD_VIEW)) {
+            event = Tracker.Event(Tracker.EVENT_TYPE_AD_VIEW)
+        } else if (eventName.equals(Commands.ADD_TO_CART)) {
+            event = Tracker.Event(Tracker.EVENT_TYPE_ADD_TO_CART)
+        } else if (eventName.equals(Commands.ADD_TO_WISH_LIST)) {
+            event = Tracker.Event(Tracker.EVENT_TYPE_ADD_TO_WISH_LIST)
+        } else if (eventName.equals(Commands.CHECKOUT_START)) {
+            event = Tracker.Event(Tracker.EVENT_TYPE_CHECKOUT_START)
+        } else if (eventName.equals(Commands.DEEP_LINK)) {
+            event = Tracker.Event(Tracker.EVENT_TYPE_DEEP_LINK)
+        } else if (eventName.equals(Commands.LEVEL_COMPLETE)) {
+            event = Tracker.Event(Tracker.EVENT_TYPE_LEVEL_COMPLETE)
+        } else if (eventName.equals(Commands.PURCHASE)) {
+            event = Tracker.Event(Tracker.EVENT_TYPE_PURCHASE)
+        } else if (eventName.equals(Commands.RATING)) {
+            event = Tracker.Event(Tracker.EVENT_TYPE_RATING)
+        } else if (eventName.equals(Commands.SEARCH)) {
+            event = Tracker.Event(Tracker.EVENT_TYPE_SEARCH)
+        } else if (eventName.equals(Commands.START_TRIAL)) {
+            event = Tracker.Event(Tracker.EVENT_TYPE_START_TRIAL)
+        } else if (eventName.equals(Commands.SUBSCRIBE)) {
+            event = Tracker.Event(Tracker.EVENT_TYPE_SUBSCRIBE)
+        } else if (eventName.equals(Commands.TUTORIAL_COMPLETE)) {
+            event = Tracker.Event(Tracker.EVENT_TYPE_TUTORIAL_COMPLETE)
+        } else {
+            event = Tracker.Event(Tracker.EVENT_TYPE_VIEW)
+        }
+
+        event.setAction(action)
+            .setAdCampaignId(adCampaignId)
+            .setAdCampaignName(adCampaignName)
+            .setAdDeviceType(deviceType)
+            .setAdGroupId(adGroupId)
+            .setAdGroupName(adGroupName)
+            .setAdMediationName(adMediationName)
+            .setAdPlacement(placement)
+            .setAdSize(adSize)
+            .setAdType(adType)
+            .setCheckoutAsGuest(checkoutAsGuest)
+            .setCompleted(completed)
             .setContentId(contentId)
-            .setReferralFrom(referralForm)
-        )
-    }
-
-    override fun checkoutStart(
-        userId: String,
-        name: String,
-        contentId: String,
-        guestCheckout: String,
-        currency: String
-    ) {
-        Tracker.sendEvent(
-            Tracker.Event(Tracker.EVENT_TYPE_CHECKOUT_START)
-                .setUserId(userId)
-                .setName(name)
-                .setContentId(contentId)
-                .setCheckoutAsGuest(guestCheckout)
-                .setCurrency(currency)
-        )
-    }
-
-    override fun search(URI: String, results: String) {
-        Tracker.sendEvent(
-            Tracker.Event(Tracker.EVENT_TYPE_SEARCH)
-                .setUri(URI)
-                .setResults(results)
-        )
-    }
-
-    override fun registrationComplete(userId: String, userName: String, referralForm: String) {
-        Tracker.sendEvent(
-            Tracker.Event(Tracker.EVENT_TYPE_REGISTRATION_COMPLETE)
-            .setUserId(userId)
-            .setUserName(userName)
-            .setReferralFrom(referralForm)
-        )
-    }
-
-    override fun view(userId: String, name: String, contentId: String, referralForm: String) {
-        Tracker.sendEvent(
-            Tracker.Event(Tracker.EVENT_TYPE_VIEW)
-            .setUserId(userId)
+            .setContentType(contentType)
+            .setCurrency(currency)
+            .setStartDate(startDate)
+            .setDescription(description)
+            .setDestination(destination)
+            .setEndDate(endDate)
+            .setItemAddedFrom(itemAddedFrom)
+            .setLevel(level)
+            .setMaxRatingValue(maxRatingValue)
             .setName(name)
-            .setContentId(contentId)
-            .setReferralFrom(referralForm)
-        )
-    }
-
-    override fun achievement(userId: String, name: String, duration: Double) {
-        val event = Tracker.Event(Tracker.EVENT_TYPE_ACHIEVEMENT)
+            .setOrderId(orderId)
+            .setQuantity(quantity)
+            .setOrigin(origin)
+            .setRatingValue(ratingValue)
+            .setReceiptId(receiptId)
+            .setReferralFrom(referralFrom)
+            .setRegistrationMethod(registrationMethod)
+            .setSearchTerm(searchTerm)
+            .setResults(results)
+            .setScore(score)
+            .setDate(date)
+            .setSuccess(success)
             .setUserId(userId)
-            .setName(name)
+            .setUri(uri)
+            .setValidated(validated)
+            .setBackground(background)
+
+        if (!price.isNaN()) event.setPrice(price)
         if (!duration.isNaN()) event.setDuration(duration)
-        Tracker.sendEvent(event)
-    }
-
-    override fun deepLink(URI: String) {
-        Tracker.sendEvent(Tracker.Event(Tracker.EVENT_TYPE_DEEP_LINK).setUri(URI))
-    }
-
-    override fun subscribe(price: Double, currency: String, productName: String, userId: String) {
-        val event = Tracker.Event(Tracker.EVENT_TYPE_SUBSCRIBE)
-            .setCurrency(currency)
-            .setName(productName)
-            .setUserId(userId)
-        if (!price.isNaN()) event.setPrice(price)
-        Tracker.sendEvent(event)
-    }
-
-    override fun startTrial(price: Double, currency: String, productName: String, userId: String) {
-        val event = Tracker.Event(Tracker.EVENT_TYPE_START_TRIAL)
-            .setCurrency(currency)
-            .setName(productName)
-            .setUserId(userId)
-        if (!price.isNaN()) event.setPrice(price)
+        if (!spatialX.isNaN()) event.setSpatialX(spatialX)
+        if (!spatialX.isNaN()) event.setSpatialX(spatialX)
+        if (!spatialZ.isNaN()) event.setSpatialZ(spatialZ)
         Tracker.sendEvent(event)
     }
 

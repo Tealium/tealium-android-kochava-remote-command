@@ -4,7 +4,6 @@ import Commands
 import EventParameters
 import Parameters
 import android.app.Application
-import com.kochava.base.Tracker.setSleep
 import com.tealium.internal.tagbridge.RemoteCommand
 import org.json.JSONObject
 
@@ -14,7 +13,7 @@ class KochavaRemoteCommand : RemoteCommand {
     var application: Application? = null
 
     /**
-     * Constructs a RemoteCommand that integrates with the Facebook App Events SDK to allow Facebook API calls to be implemented through Tealium.
+     * Constructs a RemoteCommand that integrates with the Kochava App Events SDK to allow Kochava API calls to be implemented through Tealium.
      */
     @JvmOverloads
     constructor(
@@ -68,49 +67,49 @@ class KochavaRemoteCommand : RemoteCommand {
                     initialize(payload)
                 }
                 Commands.PURCHASE -> {
-                    purchase(eventParams)
+                    logEvent(Commands.PURCHASE, eventParams)
                 }
                 Commands.TUTORIAL_COMPLETE -> {
-                    tutorialComplete(eventParams)
+                    logEvent(Commands.TUTORIAL_COMPLETE, eventParams)
                 }
                 Commands.LEVEL_COMPLETE -> {
-                    levelComplete(eventParams)
+                    logEvent(Commands.LEVEL_COMPLETE, eventParams)
                 }
                 Commands.AD_VIEW -> {
-                    adView(eventParams)
+                    logEvent(Commands.AD_VIEW, eventParams)
                 }
                 Commands.RATING -> {
-                    rating(eventParams)
+                    logEvent(Commands.RATING, eventParams)
                 }
                 Commands.ADD_TO_CART -> {
-                    addToCart(eventParams)
+                    logEvent(Commands.ADD_TO_CART, eventParams)
                 }
                 Commands.ADD_TO_WISH_LIST -> {
-                    addToWishList(eventParams)
+                    logEvent(Commands.ADD_TO_WISH_LIST, eventParams)
                 }
                 Commands.CHECKOUT_START -> {
-                    checkoutStart(eventParams)
+                    logEvent(Commands.CHECKOUT_START, eventParams)
                 }
                 Commands.SEARCH -> {
-                    search(eventParams)
+                    logEvent(Commands.SEARCH, eventParams)
                 }
                 Commands.REGISTRATION_COMPLETE -> {
-                    register(eventParams)
+                    logEvent(Commands.REGISTRATION_COMPLETE, eventParams)
                 }
                 Commands.VIEW -> {
-                    view(eventParams)
+                    logEvent(Commands.VIEW, eventParams)
                 }
                 Commands.ACHIEVEMENT -> {
-                    achieve(eventParams)
+                    logEvent(Commands.ACHIEVEMENT, eventParams)
                 }
                 Commands.DEEP_LINK -> {
-                    deepLink(eventParams)
+                    logEvent(Commands.DEEP_LINK, eventParams)
                 }
                 Commands.SUBSCRIBE -> {
-                    subscribe(eventParams)
+                    logEvent(Commands.SUBSCRIBE, eventParams)
                 }
                 Commands.START_TRIAL -> {
-                    startTrial(eventParams)
+                    logEvent(Commands.START_TRIAL, eventParams)
                 }
                 Commands.SET_SLEEP -> {
                     setSleep(eventParams)
@@ -129,6 +128,16 @@ class KochavaRemoteCommand : RemoteCommand {
         }
     }
 
+    private fun logEvent(event: String, payload: JSONObject) {
+        val customParameters: JSONObject? = payload.optJSONObject(EventParameters.CUSTOM_PARAMETERS)
+
+        customParameters?.let {
+            tracker.customEvent(event, payload.toString())
+        } ?: run {
+            getParameters(event, payload)
+        }
+    }
+
     private fun logCustomEvent(eventName: String, payload: JSONObject) {
         tracker.customEvent(eventName, payload.toString())
     }
@@ -138,336 +147,61 @@ class KochavaRemoteCommand : RemoteCommand {
         tracker.setSleep(sleep)
     }
 
-    private fun subscribe(subscribe: JSONObject) {
-        val price = subscribe.optDouble(EventParameters.PRICE)
-        val currency = subscribe.optString(EventParameters.CURRENCY)
-        val name = subscribe.optString(EventParameters.NAME)
-        val userId = subscribe.optString(EventParameters.USER_ID)
+    private fun getParameters(event: String, parameters: JSONObject) {
+        val deviceType = parameters.optString(EventParameters.DEVICE_TYPE)
+        val placement = parameters.optString(EventParameters.PLACEMENT)
+        val adType = parameters.optString(EventParameters.AD_TYPE)
+        val adCampaignId = parameters.optString(EventParameters.AD_CAMPAIGN_ID)
+        val adCampaignName = parameters.optString(EventParameters.AD_CAMPAIGN_ID)
+        val adSize = parameters.optString(EventParameters.AD_SIZE)
+        val adGroupName = parameters.optString(EventParameters.AD_GROUP_NAME)
+        val adGroupId = parameters.optString(EventParameters.AD_GROUP_ID)
+        val adNetworkName = parameters.optString(EventParameters.AD_NETWORK_NAME)
+        val adMediationName = parameters.optString(EventParameters.AD_MEDIATION_NAME)
+        val checkoutAsGuest = parameters.optString(EventParameters.CHECKOUT_AS_GUEST)
+        val contentId = parameters.optString(EventParameters.CONTENT_ID)
+        val contentType = parameters.optString(EventParameters.CONTENT_TYPE)
+        val currency = parameters.optString(EventParameters.CURRENCY)
+        val date = parameters.optString(EventParameters.DATE)
+        val description = parameters.optString(EventParameters.DESCRIPTION)
+        val destination = parameters.optString(EventParameters.DESTINATION)
+        val duration = parameters.optDouble(EventParameters.DURATION)
+        val source = parameters.optString(EventParameters.SOURCE)
+        val uri = parameters.optString(EventParameters.URI)
+        val completed = parameters.optBoolean(EventParameters.COMPLETED)
+        val action = parameters.optString(EventParameters.ACTION)
+        val background = parameters.optBoolean(EventParameters.BACKGROUND)
+        val spatialX = parameters.optDouble(EventParameters.SPATIAL_X)
+        val spatialY = parameters.optDouble(EventParameters.SPATIAL_Y)
+        val spatialZ = parameters.optDouble(EventParameters.SPATIAL_Z)
+        val validated = parameters.optString(EventParameters.VALIDATED)
+        val userName = parameters.optString(EventParameters.USER_NAME)
+        val userID = parameters.optString(EventParameters.USER_ID)
+        val success = parameters.optString(EventParameters.SUCCESS)
+        val startDate = parameters.optString(EventParameters.START_DATE)
+        val endDate = parameters.optString(EventParameters.END_DATE)
+        val searchTerm = parameters.optString(EventParameters.SEARCH_TERM)
+        val score = parameters.optString(EventParameters.SCORE)
+        val results = parameters.optString(EventParameters.RESULTS)
+        val registrationMethod = parameters.optString(EventParameters.REGISTRATION_METHOD)
+        val referralFrom = parameters.optString(EventParameters.REFERRAL_FROM)
+        val receiptId = parameters.optString(EventParameters.RECEIPT_ID)
+        val ratingValue = parameters.optDouble(EventParameters.RATING_VALUE)
+        val quantity = parameters.optDouble(EventParameters.QUANTITY)
+        val price = parameters.optDouble(EventParameters.PRICE)
+        val origin = parameters.optString(EventParameters.ORIGIN)
+        val orderId = parameters.optString(EventParameters.ORDER_ID)
+        val name = parameters.optString(EventParameters.NAME)
+        val maxRatingValue = parameters.optDouble(EventParameters.MAX_RATING_VALUE)
+        val level = parameters.optString(EventParameters.LEVEL)
+        val itemAddedFrom = parameters.optString(EventParameters.ITEM_ADDED_FROM)
 
-        val parameters: JSONObject? = subscribe.optJSONObject(EventParameters.CUSTOM_PARAMETERS)
-
-        parameters?.let {
-            // combine custom and standard params
-            it.put(EventParameters.CURRENCY, currency)
-            it.put(EventParameters.USER_ID, userId)
-            it.put(EventParameters.NAME, name)
-            if (!price.isNaN()) {
-                it.put(EventParameters.PRICE, price)
-            }
-
-            tracker.customEvent(Commands.SUBSCRIBE, it.toString())
-        } ?: run {
-            tracker.subscribe(price, currency, name, userId)
-        }
-    }
-
-    private fun startTrial(trial: JSONObject) {
-        val price = trial.optDouble(EventParameters.PRICE)
-        val currency = trial.optString(EventParameters.CURRENCY)
-        val name = trial.optString(EventParameters.NAME)
-        val userId = trial.optString(EventParameters.USER_ID)
-
-        val parameters: JSONObject? = trial.optJSONObject(EventParameters.CUSTOM_PARAMETERS)
-
-        parameters?.let {
-            // combine custom and standard params
-            it.put(EventParameters.CURRENCY, currency)
-            it.put(EventParameters.USER_ID, userId)
-            it.put(EventParameters.NAME, name)
-            if (!price.isNaN()) {
-                it.put(EventParameters.PRICE, price)
-            }
-
-            tracker.customEvent(Commands.START_TRIAL, it.toString())
-        } ?: run {
-            tracker.startTrial(price, currency, name, userId)
-        }
-    }
-
-    private fun deepLink(deepLink: JSONObject) {
-        val uri = deepLink.optString(EventParameters.URI)
-
-        val parameters: JSONObject? = deepLink.optJSONObject(EventParameters.CUSTOM_PARAMETERS)
-
-        parameters?.let {
-            // combine custom and standard params
-            it.put(EventParameters.URI, uri)
-
-            tracker.customEvent(Commands.DEEP_LINK, it.toString())
-        } ?: run {
-            tracker.deepLink(uri)
-        }
-    }
-
-    private fun achieve(achievement: JSONObject) {
-        val userId = achievement.optString(EventParameters.USER_ID)
-        val name = achievement.optString(EventParameters.NAME)
-        val duration = achievement.optDouble(EventParameters.DURATION)
-
-        val parameters: JSONObject? = achievement.optJSONObject(EventParameters.CUSTOM_PARAMETERS)
-
-        parameters?.let {
-            // combine custom and standard params
-            it.put(EventParameters.USER_ID, userId)
-            it.put(EventParameters.NAME, name)
-            if (!duration.isNaN()) {
-                it.put(EventParameters.DURATION, duration)
-            }
-
-            tracker.customEvent(Commands.ACHIEVEMENT, it.toString())
-        } ?: run {
-            tracker.achievement(userId, name, duration)
-        }
-    }
-
-    private fun view(view: JSONObject) {
-        val userId = view.optString(EventParameters.USER_ID)
-        val name = view.optString(EventParameters.NAME)
-        val contentId = view.optString(EventParameters.CONTENT_ID)
-        val referralFrom = view.optString(EventParameters.REFERRAL_FROM)
-
-        val parameters: JSONObject? = view.optJSONObject(EventParameters.CUSTOM_PARAMETERS)
-
-        parameters?.let {
-            // combine custom and standard params
-            it.put(EventParameters.USER_ID, userId)
-            it.put(EventParameters.NAME, name)
-            it.put(EventParameters.CONTENT_ID, contentId)
-            it.put(EventParameters.REFERRAL_FROM, referralFrom)
-
-            tracker.customEvent(Commands.VIEW, it.toString())
-        } ?: run {
-            tracker.view(userId, name, contentId, referralFrom)
-        }
-    }
-
-    private fun register(registration: JSONObject) {
-        val userId = registration.optString(EventParameters.USER_ID)
-        val userName = registration.optString(EventParameters.USER_NAME)
-        val referralFrom = registration.optString(EventParameters.REFERRAL_FROM)
-
-        val parameters: JSONObject? = registration.optJSONObject(EventParameters.CUSTOM_PARAMETERS)
-
-        parameters?.let {
-            // combine custom and standard params
-            it.put(EventParameters.USER_ID, userId)
-            it.put(EventParameters.USER_NAME, userName)
-            it.put(EventParameters.REFERRAL_FROM, referralFrom)
-
-            tracker.customEvent(Commands.REGISTRATION_COMPLETE, it.toString())
-        } ?: run {
-            tracker.registrationComplete(userId, userName, referralFrom)
-        }
-    }
-
-    private fun search(search: JSONObject) {
-        val uri = search.optString(EventParameters.URI)
-        val results = search.optString(EventParameters.RESULTS)
-
-        val parameters: JSONObject? = search.optJSONObject(EventParameters.CUSTOM_PARAMETERS)
-
-        parameters?.let {
-            // combine custom and standard params
-            it.put(EventParameters.URI, uri)
-            it.put(EventParameters.RESULTS, results)
-
-            tracker.customEvent(Commands.SEARCH, it.toString())
-        } ?: run {
-            tracker.search(uri, results)
-        }
-    }
-
-    private fun checkoutStart(checkoutStart: JSONObject) {
-        val userId = checkoutStart.optString(EventParameters.USER_ID)
-        val name = checkoutStart.optString(EventParameters.NAME)
-        val contentId = checkoutStart.optString(EventParameters.CONTENT_ID)
-        val guestCheckout = checkoutStart.optString(EventParameters.CHECKOUT_AS_GUEST)
-        val currency = checkoutStart.optString(EventParameters.CURRENCY)
-
-        val parameters: JSONObject? = checkoutStart.optJSONObject(EventParameters.CUSTOM_PARAMETERS)
-
-        parameters?.let {
-            // combine custom and standard params
-            it.put(EventParameters.USER_ID, userId)
-            it.put(EventParameters.NAME, name)
-            it.put(EventParameters.CONTENT_ID, contentId)
-            it.put(EventParameters.CHECKOUT_AS_GUEST, guestCheckout)
-            it.put(EventParameters.CURRENCY, currency)
-
-            tracker.customEvent(Commands.CHECKOUT_START, it.toString())
-        } ?: run {
-            tracker.checkoutStart(userId, name, contentId, guestCheckout, currency)
-        }
-    }
-
-    private fun addToWishList(wishlist: JSONObject) {
-        val userId = wishlist.optString(EventParameters.USER_ID)
-        val name = wishlist.optString(EventParameters.NAME)
-        val contentId = wishlist.optString(EventParameters.CONTENT_ID)
-        val referralFrom = wishlist.optString(EventParameters.REFERRAL_FROM)
-
-        val parameters: JSONObject? = wishlist.optJSONObject(EventParameters.CUSTOM_PARAMETERS)
-
-        parameters?.let {
-            // combine custom and standard params
-            it.put(EventParameters.USER_ID, userId)
-            it.put(EventParameters.NAME, name)
-            it.put(EventParameters.CONTENT_ID, contentId)
-            it.put(EventParameters.REFERRAL_FROM, referralFrom)
-
-            tracker.customEvent(Commands.ADD_TO_WISH_LIST, it.toString())
-        } ?: run {
-            tracker.addToWishList(userId, name, contentId, referralFrom)
-        }
-    }
-
-    private fun addToCart(cart: JSONObject) {
-        val userId = cart.optString(EventParameters.USER_ID)
-        val name = cart.optString(EventParameters.NAME)
-        val contentId = cart.optString(EventParameters.CONTENT_ID)
-        val quantity = cart.optDouble(EventParameters.QUANTITY)
-        val referralFrom = cart.optString(EventParameters.REFERRAL_FROM)
-
-        val parameters: JSONObject? = cart.optJSONObject(EventParameters.CUSTOM_PARAMETERS)
-
-        parameters?.let {
-            // combine custom and standard params
-            it.put(EventParameters.USER_ID, userId)
-            it.put(EventParameters.NAME, name)
-            it.put(EventParameters.CONTENT_ID, contentId)
-            if (!quantity.isNaN()) {
-                it.put(EventParameters.QUANTITY, quantity)
-            }
-            it.put(EventParameters.REFERRAL_FROM, referralFrom)
-
-            tracker.customEvent(Commands.ADD_TO_CART, it.toString())
-        } ?: run {
-            tracker.addToCart(userId, name, contentId, quantity, referralFrom)
-        }
-    }
-
-    private fun rating(rating: JSONObject) {
-        val value = rating.optDouble(EventParameters.RATING_VALUE)
-        val maxRating = rating.optDouble(EventParameters.MAX_RATING_VALUE)
-
-        val parameters: JSONObject? = rating.optJSONObject(EventParameters.CUSTOM_PARAMETERS)
-
-        parameters?.let {
-            // combine custom and standard params
-            if (!value.isNaN()) {
-                it.put(EventParameters.RATING_VALUE, value)
-            }
-            if (!maxRating.isNaN()) {
-                it.put(EventParameters.MAX_RATING_VALUE, maxRating)
-            }
-
-            tracker.customEvent(Commands.RATING, it.toString())
-        } ?: run {
-            tracker.rating(value, maxRating)
-        }
-    }
-
-    private fun adView(adview: JSONObject) {
-        val type = adview.optString(EventParameters.AD_TYPE)
-        val networkName = adview.optString(EventParameters.AD_NETWORK_NAME)
-        val placement = adview.optString(EventParameters.PLACEMENT)
-        val mediationName = adview.optString(EventParameters.AD_MEDIATION_NAME)
-        val campaignId = adview.optString(EventParameters.AD_CAMPAIGN_ID)
-        val campaignName = adview.optString(EventParameters.AD_CAMPAIGN_NAME)
-        val size = adview.optString(EventParameters.AD_SIZE)
-
-        val parameters: JSONObject? = adview.optJSONObject(EventParameters.CUSTOM_PARAMETERS)
-
-        parameters?.let {
-            // combine custom and standard params
-            it.put(EventParameters.USER_ID, type)
-            it.put(EventParameters.NAME, networkName)
-            it.put(EventParameters.DURATION, placement)
-            it.put(EventParameters.USER_ID, mediationName)
-            it.put(EventParameters.NAME, campaignId)
-            it.put(EventParameters.DURATION, campaignName)
-
-            tracker.customEvent(Commands.AD_VIEW, it.toString())
-        } ?: run {
-            tracker.adView(
-                type,
-                networkName,
-                placement,
-                mediationName,
-                campaignId,
-                campaignName,
-                size
-            )
-        }
-    }
-
-    private fun tutorialComplete(tutorial: JSONObject) {
-        val userId = tutorial.optString(EventParameters.USER_ID)
-        val name = tutorial.optString(EventParameters.NAME)
-        val duration = tutorial.optDouble(EventParameters.DURATION) as Double
-
-        val parameters: JSONObject? = tutorial.optJSONObject(EventParameters.CUSTOM_PARAMETERS)
-
-        parameters?.let {
-            // combine custom and standard params
-            it.put(EventParameters.USER_ID, userId)
-            it.put(EventParameters.NAME, name)
-            if (!duration.isNaN()) {
-                it.put(EventParameters.DURATION, duration)
-            }
-
-            tracker.customEvent(Commands.TUTORIAL_COMPLETE, it.toString())
-        } ?: run {
-            tracker.tutorialComplete(userId, name, duration)
-        }
-    }
-
-    private fun levelComplete(level: JSONObject) {
-        val userId = level.optString(EventParameters.USER_ID)
-        val name = level.optString(EventParameters.NAME)
-        val duration = level.optDouble(EventParameters.DURATION) as Double
-
-        val parameters: JSONObject? = level.optJSONObject(EventParameters.CUSTOM_PARAMETERS)
-
-        parameters?.let {
-            // combine custom and standard params
-            it.put(EventParameters.USER_ID, userId)
-            it.put(EventParameters.NAME, name)
-            if (!duration.isNaN()) {
-                it.put(EventParameters.DURATION, duration)
-            }
-
-            tracker.customEvent(Commands.LEVEL_COMPLETE, it.toString())
-        } ?: run {
-            tracker.levelComplete(userId, name, duration)
-        }
-    }
-
-    private fun purchase(purchase: JSONObject) {
-        val userId = purchase.optString(EventParameters.USER_ID)
-        val name = purchase.optString(EventParameters.NAME)
-        val contentId = purchase.optString(EventParameters.CONTENT_ID)
-        val price = purchase.optDouble(EventParameters.PRICE) as Double
-        val currency = purchase.optString(EventParameters.CURRENCY)
-        val guestCheckout = purchase.optString(EventParameters.CHECKOUT_AS_GUEST)
-        val parameters: JSONObject? = purchase.optJSONObject(EventParameters.CUSTOM_PARAMETERS)
-
-        parameters?.let {
-            // combine custom and standard params
-            it.put(EventParameters.USER_ID, userId)
-            it.put(EventParameters.NAME, name)
-            it.put(EventParameters.CONTENT_ID, contentId)
-            if (!price.isNaN()) {
-                it.put(EventParameters.PRICE, price)
-            }
-            it.put(EventParameters.CURRENCY, currency)
-            it.put(EventParameters.CHECKOUT_AS_GUEST, guestCheckout)
-
-            tracker.customEvent(Commands.PURCHASE, it.toString())
-        } ?: run {
-            tracker.purchase(userId, name, contentId, price, currency, guestCheckout)
-        }
-
+        tracker.logEvent(
+            event, deviceType, placement, adType, adCampaignId, adCampaignName, adSize, adGroupName, adGroupId, adNetworkName, adMediationName,
+            checkoutAsGuest, contentId, contentType, currency, date, description, destination, duration, source, uri, completed, action, background,
+            spatialX, spatialY, spatialZ, validated, userName, userID, success, startDate, endDate, searchTerm, source, score, results, registrationMethod,
+            referralFrom, receiptId, ratingValue, quantity, price, origin, orderId, name, maxRatingValue, level, itemAddedFrom
+        )
     }
 
     companion object {
