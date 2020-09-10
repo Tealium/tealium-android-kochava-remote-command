@@ -49,7 +49,7 @@ class KochavaRemoteCommandTest {
     }
 
     @Test
-    fun customEvent() {
+    fun customEventAndParameters() {
         val parameters = JSONObject()
         val eventParams = JSONObject()
         eventParams.put(EventParameters.BACKGROUND, false)
@@ -72,26 +72,60 @@ class KochavaRemoteCommandTest {
     }
 
     @Test
-    fun standardEvent() {
+    fun eventWithStandardParameters() {
         val properties = JSONObject()
         val eventParams = JSONObject()
-        val infoDictionary = JSONObject()
-
         eventParams.put(EventParameters.USER_ID, "abc")
         eventParams.put(EventParameters.NAME, "name")
         eventParams.put(EventParameters.CURRENCY, "USD")
         eventParams.put(EventParameters.COMPLETED, true)
 
-        infoDictionary.put("key", "value")
-        eventParams.put("info_dictionary", infoDictionary)
-
         properties.put("event_parameters", eventParams)
 
         every {
-            mockTracker.standardEvent(any(), any()) } just Runs
+            mockTracker.logEvent(
+                any(), any(), any(), any(), any(), any(), any(), any(),
+                any(), any(), any(), any(), any(), any(), any(), any(),
+                any(), any(), any(), any(), any(), any(), any(), any(),
+                any(), any(), any(), any(), any(), any(), any(), any(),
+                any(), any(), any(), any(), any(), any(), any(), any(),
+                any(), any(), any(), any(), any(), any(), any(), any(),
+                any()
+            ) } just Runs
         kochavaRemoteCommand.parseCommands(arrayOf(Commands.START_TRIAL), properties)
         verify {
-            mockTracker.standardEvent(Commands.START_TRIAL, eventParams.toString())
+            mockTracker.logEvent(
+                Commands.START_TRIAL, "", "", "", "", "", "", "", "", "",
+                "", "", "", "", "USD", "", "", "", Double.NaN, "", "", true,
+                "", false, Double.NaN, Double.NaN, Double.NaN, "", "", "abc", "", "", "", "", "",
+                "", "", "", "", "", Double.NaN, Double.NaN, Double.NaN, "", "", "name", Double.NaN,
+                "", ""
+            )
+        }
+        confirmVerified(mockTracker)
+    }
+
+    @Test
+    fun eventWithCustomParameters() {
+        val eventParams = JSONObject()
+        val parameters = JSONObject()
+        eventParams.put(EventParameters.PRICE, 9.0)
+        eventParams.put(EventParameters.NAME, "name")
+        eventParams.put(EventParameters.USER_ID, "abc")
+        eventParams.put(EventParameters.CURRENCY, "USD")
+
+        val infoDictionary = JSONObject()
+        infoDictionary.put("key1", "value1")
+        infoDictionary.put("key2", 2)
+
+        eventParams.put("info_dictionary", infoDictionary)
+        parameters.put("event_parameters", eventParams)
+
+        every { mockTracker.customEvent(any(), any()) } just Runs
+
+        kochavaRemoteCommand.parseCommands(arrayOf(Commands.START_TRIAL), parameters)
+        verify {
+            mockTracker.customEvent(Commands.START_TRIAL, eventParams.toString())
         }
         confirmVerified(mockTracker)
     }
