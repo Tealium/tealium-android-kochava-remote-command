@@ -1,5 +1,6 @@
 package com.tealium.kochava
 
+import Commands
 import android.annotation.SuppressLint
 import android.app.Application
 import com.kochava.base.Tracker
@@ -24,57 +25,7 @@ class KochavaTracker(application: Application, applicationId: String) : KochavaT
     }
 
     @SuppressLint("CheckResult")
-    override fun logEvent(
-        eventName: String,
-        deviceType: String,
-        placement: String,
-        adType: String,
-        adCampaignId: String,
-        adCampaignName: String,
-        adSize: String,
-        adGroupName: String,
-        adGroupId: String,
-        adNetworkName: String,
-        adMediationName: String,
-        checkoutAsGuest: String,
-        contentId: String,
-        contentType: String,
-        currency: String,
-        date: String,
-        description: String,
-        destination: String,
-        duration: Double,
-        source: String,
-        uri: String,
-        completed: Boolean,
-        action: String,
-        background: Boolean,
-        spatialX: Double,
-        spatialY: Double,
-        spatialZ: Double,
-        validated: String,
-        userName: String,
-        userId: String,
-        success: String,
-        startDate: String,
-        endDate: String,
-        searchTerm: String,
-        source1: String,
-        score: String,
-        results: String,
-        registrationMethod: String,
-        referralFrom: String,
-        receiptId: String,
-        ratingValue: Double,
-        quantity: Double,
-        price: Double,
-        origin: String,
-        orderId: String,
-        name: String,
-        maxRatingValue: Double,
-        level: String,
-        itemAddedFrom: String
-    ) {
+    override fun logEvent(eventName: String, payload: JSONObject) {
         var event: Tracker.Event
         if (eventName.equals(Commands.ACHIEVEMENT)) {
             event = Tracker.Event(Tracker.EVENT_TYPE_ACHIEVEMENT)
@@ -106,51 +57,8 @@ class KochavaTracker(application: Application, applicationId: String) : KochavaT
             event = Tracker.Event(Tracker.EVENT_TYPE_VIEW)
         }
 
-        event.setAction(action)
-            .setAdCampaignId(adCampaignId)
-            .setAdCampaignName(adCampaignName)
-            .setAdDeviceType(deviceType)
-            .setAdGroupId(adGroupId)
-            .setAdGroupName(adGroupName)
-            .setAdMediationName(adMediationName)
-            .setAdPlacement(placement)
-            .setAdSize(adSize)
-            .setAdType(adType)
-            .setCheckoutAsGuest(checkoutAsGuest)
-            .setCompleted(completed)
-            .setContentId(contentId)
-            .setContentType(contentType)
-            .setCurrency(currency)
-            .setStartDate(startDate)
-            .setDescription(description)
-            .setDestination(destination)
-            .setEndDate(endDate)
-            .setItemAddedFrom(itemAddedFrom)
-            .setLevel(level)
-            .setMaxRatingValue(maxRatingValue)
-            .setName(name)
-            .setOrderId(orderId)
-            .setQuantity(quantity)
-            .setOrigin(origin)
-            .setRatingValue(ratingValue)
-            .setReceiptId(receiptId)
-            .setReferralFrom(referralFrom)
-            .setRegistrationMethod(registrationMethod)
-            .setSearchTerm(searchTerm)
-            .setResults(results)
-            .setScore(score)
-            .setDate(date)
-            .setSuccess(success)
-            .setUserId(userId)
-            .setUri(uri)
-            .setValidated(validated)
-            .setBackground(background)
+        event.addCustom(payload)
 
-        if (!price.isNaN()) event.setPrice(price)
-        if (!duration.isNaN()) event.setDuration(duration)
-        if (!spatialX.isNaN()) event.setSpatialX(spatialX)
-        if (!spatialX.isNaN()) event.setSpatialX(spatialX)
-        if (!spatialZ.isNaN()) event.setSpatialZ(spatialZ)
         Tracker.sendEvent(event)
     }
 

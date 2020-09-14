@@ -134,7 +134,7 @@ class KochavaRemoteCommand : RemoteCommand {
         customParameters?.let {
             tracker.customEvent(event, payload.toString())
         } ?: run {
-            getParameters(event, payload)
+            tracker.logEvent(event, payload)
         }
     }
 
@@ -145,63 +145,6 @@ class KochavaRemoteCommand : RemoteCommand {
     private fun setSleep(setsleep: JSONObject) {
         val sleep = setsleep.optBoolean(EventParameters.SLEEP)
         tracker.setSleep(sleep)
-    }
-
-    private fun getParameters(event: String, parameters: JSONObject) {
-        val deviceType = parameters.optString(EventParameters.DEVICE_TYPE)
-        val placement = parameters.optString(EventParameters.PLACEMENT)
-        val adType = parameters.optString(EventParameters.AD_TYPE)
-        val adCampaignId = parameters.optString(EventParameters.AD_CAMPAIGN_ID)
-        val adCampaignName = parameters.optString(EventParameters.AD_CAMPAIGN_ID)
-        val adSize = parameters.optString(EventParameters.AD_SIZE)
-        val adGroupName = parameters.optString(EventParameters.AD_GROUP_NAME)
-        val adGroupId = parameters.optString(EventParameters.AD_GROUP_ID)
-        val adNetworkName = parameters.optString(EventParameters.AD_NETWORK_NAME)
-        val adMediationName = parameters.optString(EventParameters.AD_MEDIATION_NAME)
-        val checkoutAsGuest = parameters.optString(EventParameters.CHECKOUT_AS_GUEST)
-        val contentId = parameters.optString(EventParameters.CONTENT_ID)
-        val contentType = parameters.optString(EventParameters.CONTENT_TYPE)
-        val currency = parameters.optString(EventParameters.CURRENCY)
-        val date = parameters.optString(EventParameters.DATE)
-        val description = parameters.optString(EventParameters.DESCRIPTION)
-        val destination = parameters.optString(EventParameters.DESTINATION)
-        val duration = parameters.optDouble(EventParameters.DURATION)
-        val source = parameters.optString(EventParameters.SOURCE)
-        val uri = parameters.optString(EventParameters.URI)
-        val completed = parameters.optBoolean(EventParameters.COMPLETED)
-        val action = parameters.optString(EventParameters.ACTION)
-        val background = parameters.optBoolean(EventParameters.BACKGROUND)
-        val spatialX = parameters.optDouble(EventParameters.SPATIAL_X)
-        val spatialY = parameters.optDouble(EventParameters.SPATIAL_Y)
-        val spatialZ = parameters.optDouble(EventParameters.SPATIAL_Z)
-        val validated = parameters.optString(EventParameters.VALIDATED)
-        val userName = parameters.optString(EventParameters.USER_NAME)
-        val userID = parameters.optString(EventParameters.USER_ID)
-        val success = parameters.optString(EventParameters.SUCCESS)
-        val startDate = parameters.optString(EventParameters.START_DATE)
-        val endDate = parameters.optString(EventParameters.END_DATE)
-        val searchTerm = parameters.optString(EventParameters.SEARCH_TERM)
-        val score = parameters.optString(EventParameters.SCORE)
-        val results = parameters.optString(EventParameters.RESULTS)
-        val registrationMethod = parameters.optString(EventParameters.REGISTRATION_METHOD)
-        val referralFrom = parameters.optString(EventParameters.REFERRAL_FROM)
-        val receiptId = parameters.optString(EventParameters.RECEIPT_ID)
-        val ratingValue = parameters.optDouble(EventParameters.RATING_VALUE)
-        val quantity = parameters.optDouble(EventParameters.QUANTITY)
-        val price = parameters.optDouble(EventParameters.PRICE)
-        val origin = parameters.optString(EventParameters.ORIGIN)
-        val orderId = parameters.optString(EventParameters.ORDER_ID)
-        val name = parameters.optString(EventParameters.NAME)
-        val maxRatingValue = parameters.optDouble(EventParameters.MAX_RATING_VALUE)
-        val level = parameters.optString(EventParameters.LEVEL)
-        val itemAddedFrom = parameters.optString(EventParameters.ITEM_ADDED_FROM)
-
-        tracker.logEvent(
-            event, deviceType, placement, adType, adCampaignId, adCampaignName, adSize, adGroupName, adGroupId, adNetworkName, adMediationName,
-            checkoutAsGuest, contentId, contentType, currency, date, description, destination, duration, source, uri, completed, action, background,
-            spatialX, spatialY, spatialZ, validated, userName, userID, success, startDate, endDate, searchTerm, source, score, results, registrationMethod,
-            referralFrom, receiptId, ratingValue, quantity, price, origin, orderId, name, maxRatingValue, level, itemAddedFrom
-        )
     }
 
     companion object {

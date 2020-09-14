@@ -82,26 +82,9 @@ class KochavaRemoteCommandTest {
 
         properties.put("event_parameters", eventParams)
 
-        every {
-            mockTracker.logEvent(
-                any(), any(), any(), any(), any(), any(), any(), any(),
-                any(), any(), any(), any(), any(), any(), any(), any(),
-                any(), any(), any(), any(), any(), any(), any(), any(),
-                any(), any(), any(), any(), any(), any(), any(), any(),
-                any(), any(), any(), any(), any(), any(), any(), any(),
-                any(), any(), any(), any(), any(), any(), any(), any(),
-                any()
-            ) } just Runs
+        every { mockTracker.logEvent(any(), any()) } just Runs
         kochavaRemoteCommand.parseCommands(arrayOf(Commands.START_TRIAL), properties)
-        verify {
-            mockTracker.logEvent(
-                Commands.START_TRIAL, "", "", "", "", "", "", "", "", "",
-                "", "", "", "", "USD", "", "", "", Double.NaN, "", "", true,
-                "", false, Double.NaN, Double.NaN, Double.NaN, "", "", "abc", "", "", "", "", "",
-                "", "", "", "", "", Double.NaN, Double.NaN, Double.NaN, "", "", "name", Double.NaN,
-                "", ""
-            )
-        }
+        verify { mockTracker.logEvent(Commands.START_TRIAL, eventParams) }
         confirmVerified(mockTracker)
     }
 
