@@ -43,7 +43,6 @@ class MainActivity : AppCompatActivity() {
                     "currency_code" to "usd",
                     "product_unit_price" to 5,
                 )
-//                "product_id" to "sku123",
             )
         }
         binding.ratingBtn.setOnClickListener { TealiumHelper.trackEvent("rating", emptyMap()) }
