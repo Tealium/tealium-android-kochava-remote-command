@@ -72,7 +72,6 @@ class StandardEventTests {
     @Test
     fun testStandardEventWithoutOptionalData() {
         val payload = JSONObject()
-        payload.put("event", JSONObject())
         kochavaRemoteCommand.parseCommands(arrayOf("rating"), payload)
 
         every {
@@ -80,7 +79,7 @@ class StandardEventTests {
         } just runs
 
         verify {
-            mockKochavaInstance.sendEvent(Tracker.EVENT_TYPE_RATING)
+            mockKochavaInstance.sendEvent(Tracker.EVENT_TYPE_RATING, null)
         }
 
         confirmVerified(mockKochavaInstance)

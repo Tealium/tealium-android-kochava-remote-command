@@ -6,7 +6,11 @@ interface KochavaCommand {
     fun initialize(parameters: JSONObject? = null)
 
     // Send standard event
-    fun sendEvent(standardEventType: Int, parameters: JSONObject? = null)
+    fun sendEvent(
+        standardEventType: Int,
+        standardParameters: JSONObject? = null,
+        customParameters: JSONObject? = null
+    )
 
     // Send custom event
     fun sendCustomEvent(eventName: String, parameters: JSONObject? = null)

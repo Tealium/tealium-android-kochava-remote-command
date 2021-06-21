@@ -12,7 +12,6 @@ object EventKey {
     const val CUSTOM = "custom"
     const val CUSTOM_EVENT_NAME = "custom_event_name"
 
-    const val CONFIGURATION_PARAMS = "configuration_params"
     const val APP_GUID = "app_guid"
     const val LOG_LEVEL = "log_level"
     const val IDENTITY_LINKS = "identity_link_ids"
@@ -38,7 +37,7 @@ object StandardEvents {
         "rating" to Tracker.EVENT_TYPE_RATING,
         "registrationcomplete" to Tracker.EVENT_TYPE_REGISTRATION_COMPLETE,
         "search" to Tracker.EVENT_TYPE_SEARCH,
-        "completetutorial" to Tracker.EVENT_TYPE_TUTORIAL_COMPLETE,
+        "tutorialcomplete" to Tracker.EVENT_TYPE_TUTORIAL_COMPLETE,
         "view" to Tracker.EVENT_TYPE_VIEW,
         "adview" to Tracker.EVENT_TYPE_AD_VIEW,
         "pushreceived" to Tracker.EVENT_TYPE_PUSH_RECEIVED,
@@ -51,60 +50,6 @@ object StandardEvents {
     )
 }
 
-object EventParameters {
-    val names = mapOf(
-        ParameterKey.DEVICE_TYPE to "device_type",
-        ParameterKey.PLACEMENT to "placement",
-        ParameterKey.AD_TYPE to "ad_type",
-        ParameterKey.AD_CAMPAIGN_ID to "ad_campaign_id",
-        ParameterKey.AD_CAMPAIGN_NAME to "ad_campaign_name",
-        ParameterKey.AD_SIZE to "ad_size",
-        ParameterKey.AD_GROUP_NAME to "ad_group_name",
-        ParameterKey.AD_GROUP_ID to "ad_group_id",
-        ParameterKey.AD_NETWORK_NAME to "ad_network_name",
-        ParameterKey.AD_MEDIATION_NAME to "ad_mediation_name",
-        ParameterKey.CHECKOUT_AS_GUEST to "checkout_as_guest",
-        ParameterKey.CONTENT_ID to "content_id",
-        ParameterKey.CONTENT_TYPE to "content_type",
-        ParameterKey.CURRENCY to "currency",
-        ParameterKey.DATE to "date",
-        ParameterKey.DESCRIPTION to "description",
-        ParameterKey.DESTINATION to "destination",
-        ParameterKey.DURATION to "duration",
-        ParameterKey.END_DATE to "end_date",
-        ParameterKey.ITEM_ADDED_FROM to "item_added_from",
-        ParameterKey.LEVEL to "level",
-        ParameterKey.MAX_RATING_VALUE to "max_rating_value",
-        ParameterKey.NAME to "name",
-        ParameterKey.ORDER_ID to "order_id",
-        ParameterKey.ORIGIN to "origin",
-        ParameterKey.PRICE to "price",
-        ParameterKey.QUANTITY to "quantity",
-        ParameterKey.RATING_VALUE to "rating_value",
-        ParameterKey.RECEIPT_ID to "receipt_id",
-        ParameterKey.REFERRAL_FROM to "referral_from",
-        ParameterKey.REGISTRATION_METHOD to "registration_method",
-        ParameterKey.RESULTS to "results",
-        ParameterKey.SCORE to "score",
-        ParameterKey.SEARCH_TERM to "search_term",
-        ParameterKey.START_DATE to "start_date",
-        ParameterKey.SUCCESS to "success",
-        ParameterKey.USER_ID to "user_id",
-        ParameterKey.USER_NAME to "user_name",
-        ParameterKey.VALIDATED to "validated",
-        ParameterKey.SPATIAL_X to "spatial_x",
-        ParameterKey.SPATIAL_Y to "spatial_y",
-        ParameterKey.SPATIAL_Z to "spatial_z",
-
-        ParameterKey.BACKGROUND to "background",
-        ParameterKey.ACTION to "action",
-        ParameterKey.COMPLETED to "completed",
-        ParameterKey.URI to "uri",
-        ParameterKey.SOURCE to "source"
-    )
-}
-
-// maybe redundant. How to simplify?
 object ParameterKey {
     const val DEVICE_TYPE = "device_type"
     const val PLACEMENT = "placement"

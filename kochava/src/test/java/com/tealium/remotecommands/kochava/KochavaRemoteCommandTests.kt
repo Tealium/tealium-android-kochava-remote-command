@@ -32,30 +32,27 @@ class KochavaRemoteCommandTests {
     @Test
     fun testSplitCommands() {
         val json = JSONObject()
-        json.put("command_name", "Purchase,CompleteTutorial,CheckoutStart")
+        json.put("command_name", "Purchase,TutorialComplete,CheckoutStart")
         val commands = kochavaRemoteCommand.splitCommands(json)
 
         assertEquals(3, commands.count())
         assertEquals("purchase", commands[0])
-        assertEquals("completetutorial", commands[1])
+        assertEquals("tutorialcomplete", commands[1])
         assertEquals("checkoutstart", commands[2])
     }
 
     @Test
     fun testInitialize() {
-        val config = JSONObject()
-        config.put("app_gui", "testId")
-        config.put("logLevel", "dev")
-
         val payload = JSONObject()
-        payload.put(EventKey.CONFIGURATION_PARAMS, config)
+        payload.put("app_gui", "testId")
+        payload.put("logLevel", "dev")
         payload.put("command_name", Commands.INITIALIZE)
 
         every { mockKochavaInstance.initialize(any()) } just Runs
 
         kochavaRemoteCommand.parseCommands(arrayOf("initialize"), payload)
 
-        verify { mockKochavaInstance.initialize(config) }
+        verify { mockKochavaInstance.initialize(payload) }
 
         confirmVerified(mockKochavaInstance)
     }

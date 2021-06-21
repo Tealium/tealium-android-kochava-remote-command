@@ -16,7 +16,7 @@ object TealiumHelper {
     // Identifier for the main Tealium instance
     val TEALIUM_MAIN = "main"
     private lateinit var tealium: Tealium
-    private val appGuid = "your_dev_key"
+    private val appGuid = "your_app_guid"
 
     fun initialize(application: Application) {
 
@@ -29,8 +29,8 @@ object TealiumHelper {
             "kochava",
             Environment.DEV,
             dispatchers = mutableSetOf(
-                Dispatchers.TagManagement,
-                Dispatchers.RemoteCommands
+                Dispatchers.RemoteCommands,
+                Dispatchers.TagManagement
             ),
             modules = mutableSetOf(Modules.Lifecycle)
         ).apply {
@@ -44,7 +44,7 @@ object TealiumHelper {
 //            remoteCommands?.add(kochavaRemoteCommand)
 
             // JSON Remote Command - requires local filename or url to remote file
-            remoteCommands?.add(kochavaRemoteCommand, remoteUrl = "kochava.json")
+            remoteCommands?.add(kochavaRemoteCommand, filename = "kochava.json")
         }
     }
 
