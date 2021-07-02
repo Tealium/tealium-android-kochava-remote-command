@@ -81,7 +81,7 @@ class KochavaRemoteCommand @JvmOverloads constructor(
     }
 
     /**
-     * Returns the Facebook standard event name if it exists.
+     * Returns the Kochava standard event name if it exists.
      *
      * @param commandName - name of the Tealium command name.
      */
