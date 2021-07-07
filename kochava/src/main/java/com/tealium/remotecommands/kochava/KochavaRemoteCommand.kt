@@ -7,7 +7,7 @@ import java.util.*
 
 class KochavaRemoteCommand @JvmOverloads constructor(
     application: Application,
-    appGui: String,
+    appGui: String? = null,
     commandId: String = DEFAULT_COMMAND_ID,
     description: String = DEFAULT_COMMAND_DESCRIPTION
 ) : RemoteCommand(commandId, description) {

@@ -48,3 +48,26 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 }
+
+afterEvaluate {
+    publishing {
+        publications {
+            mavenJava(MavenPublication) {
+                groupId 'com.tealium.remotecommands'
+                artifactId 'kochava'
+                version tealium_kochava_version
+            }
+        }
+
+//        repositories {
+//            maven {
+//                url "s3://maven.tealiumiq.com/android/releases/"
+//                credentials(AwsCredentials) {
+//                    accessKey AWS_ACCESS_KEY
+//                    secretKey AWS_SECRET_KEY
+//                    sessionToken AWS_SESSION_TOKEN
+//                }
+//            }
+//        }
+    }
+}
