@@ -10,7 +10,7 @@ class KochavaRemoteCommand @JvmOverloads constructor(
     appGui: String? = null,
     commandId: String = DEFAULT_COMMAND_ID,
     description: String = DEFAULT_COMMAND_DESCRIPTION
-) : RemoteCommand(commandId, description) {
+) : RemoteCommand(commandId, description, BuildConfig.TEALIUM_KOCHAVA_VERSION) {
 
     var kochavaInstance: KochavaCommand = KochavaInstance(application, appGui)
 

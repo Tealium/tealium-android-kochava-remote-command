@@ -12,6 +12,7 @@ android {
         minSdkVersion 21
         targetSdkVersion 32
         buildConfigField 'String', 'TAG', "\"Tealium-Kochava-$tealium_kochava_version\""
+        buildConfigField 'String', 'TEALIUM_KOCHAVA_VERSION', "\"$tealium_kochava_version\""
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
